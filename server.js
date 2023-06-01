@@ -15,7 +15,7 @@ app.use(cors());
 app.use(compression());
 const PORT = process.env.PORT || 3002;
 const DB_URI = process.env.DB_URI;
-app.get("/home", (req, res) => {
+app.get("/", (req, res) => {
     res.send("Hello World!");
 });
 
@@ -27,10 +27,6 @@ require("./routes/media.route")(app);
 require("./routes/payment.route")(app);
 
 require("./routes/productReview.route")(app);
-
-app.all("*", (req, res, next) => {
-    res.send("This Route is not registered!! ❗");
-});
 
 app.use(globalErrorHandler);
 
