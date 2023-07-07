@@ -616,3 +616,35 @@ module.exports.GetUserProfiles = async (req, res) => {
         });
     }
 };
+
+exports.socialLogin = async (req, res) => {
+    try {
+        const { firstName, lastName, email, mobile } = req.body;
+        console.log(req.body);
+        const user = await User.findOne({ firstName, lastName, email, mobile });
+        console.log(user);
+        if (user) {
+            jwt.sign({ id: user._id }, JWTkey, (err, token) => {
+                if (err) {
+                    return res.status(401).send("Invalid Credentials");
+                } else {
+                    return res.status(200).json({ status: 200, msg: "Login successfully", userId: user._id, token: token, });
+                }
+            });
+        } else {
+            const newUser = await User.create({ firstName, lastName, mobile, email });
+            if (newUser) {
+                jwt.sign({ id: newUser._id }, JWTkey, (err, token) => {
+                    if (err) {
+                        return res.status(401).send("Invalid Credentials");
+                    } else {
+                        return res.status(200).json({ status: 200, msg: "Login successfully", userId: user._id, token: token, });
+                    }
+                });
+            }
+        }
+    } catch (err) {
+        console.error(err);
+        return createResponse(res, 500, "Internal server error");
+    }
+};
