@@ -29,7 +29,7 @@ const generateJwtToken = (id) => {
 
 exports.resendOtp = async (req, res) => {
     try {
-        const otp = math.floor(1000 + Math.random() * 9000);
+        const otp = Math.floor(1000 + Math.random() * 9000);
         const user = await User.findById(req.params.id, { otp: otp }, { new: true });
         if (!user) {
             return res.status(401).json({ message: "No User Found ", });
