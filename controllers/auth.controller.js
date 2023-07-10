@@ -423,35 +423,35 @@ exports.signup2 = async function (req, res) {
         res.status(500).json({ message: error.message });
     }
 };
-exports.verifyOTP = async (req, res) => {
-    try {
-        const { otp } = req.body;
+// exports.verifyOTP = async (req, res) => {
+//     try {
+//         const { otp } = req.body;
 
-        const data = await User.findOne({ _id: req.params.id });
-        if (!data) {
-            return res.status(401).json({
-                message: "Your Otp is Wrong",
-            });
-        }
-        if (data.otp == otp) {
-            // await astrologer.findOneAndUpdate(
-            //     { _id: req.params.id },
-            //     { otp: "" },
-            //     { new: true }
-            // );
-            return res.status(200).json({
-                message: "Your Otp is verified",
-            });
-        }
-        return res.status(401).json({
-            message: "Your Otp is Wrong",
-        });
-    } catch (err) {
-        res.status(400).json({
-            message: err.message,
-        });
-    }
-};
+//         const data = await User.findOne({ _id: req.params.id });
+//         if (!data) {
+//             return res.status(401).json({
+//                 message: "Your Otp is Wrong",
+//             });
+//         }
+//         if (data.otp == otp) {
+//             // await astrologer.findOneAndUpdate(
+//             //     { _id: req.params.id },
+//             //     { otp: "" },
+//             //     { new: true }
+//             // );
+//             return res.status(200).json({
+//                 message: "Your Otp is verified",
+//             });
+//         }
+//         return res.status(401).json({
+//             message: "Your Otp is Wrong",
+//         });
+//     } catch (err) {
+//         res.status(400).json({
+//             message: err.message,
+//         });
+//     }
+// };
 
 // SignIn
 exports.loginWithMobile = async (req, res) => {
