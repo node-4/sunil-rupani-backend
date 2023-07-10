@@ -615,7 +615,8 @@ exports.socialLogin = async (req, res) => {
                 }
             });
         } else {
-            const newUser = await User.create({ firstName, lastName, mobile, email });
+            const referCode = newOTP.generate(16, { alphabets: true, upperCase: true, specialChar: false, });
+            const newUser = await User.create({ firstName, lastName, mobile, email,referCode });
             if (newUser) {
                 jwt.sign({ id: newUser._id }, JWTkey, (err, token) => {
                     if (err) {
