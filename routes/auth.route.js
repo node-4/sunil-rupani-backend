@@ -36,8 +36,7 @@ router.post(
     authController.updateUserProfile
 );
 router.get(
-    "/view-user-profiles",
-    isAuthenticated,
+    "/view-user-profiles/:id",
     authController.GetUserProfiles
 );
 

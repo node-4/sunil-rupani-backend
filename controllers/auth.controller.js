@@ -30,23 +30,13 @@ const generateJwtToken = (id) => {
 exports.resendOtp = async (req, res) => {
     try {
         const otp = math.floor(1000 + Math.random() * 9000);
-        const user = await User.findById(
-            req.params.id,
-            { otp: otp },
-            { new: true }
-        );
-        console.log(user);
+        const user = await User.findById(req.params.id, { otp: otp }, { new: true });
         if (!user) {
-            return res.status(401).json({
-                message: "No User Found ",
-            });
+            return res.status(401).json({ message: "No User Found ", });
         } else {
+            let update = await User.findByIdAndUpdate({ _id: user._id }, { $set: { otp: otp } }, { new: true })
             // const data = await sendSMS(user.mobile, otp);
-            res.status(200).json({
-                message: "OTP is Send ",
-                otp: otp,
-                data: user,
-            });
+            res.status(200).json({ message: "OTP is Send ", otp: otp, data: update, });
         }
     } catch (err) {
         res.status(400).json({
@@ -59,18 +49,15 @@ exports.register = async (req, res) => {
         const { mobile } = req.body;
         const mobileExists = await User.findOne({ mobile });
         if (mobileExists) {
-            return res.status(401).json({
-                message: "Mobile Number Already Exists",
-            });
+            return res.status(401).json({ message: "Mobile Number Already Exists", });
         }
         const otp = Math.floor(1000 + Math.random() * 9000);
-        const user = await User.create({ mobile, otp });
+        const referCode = newOTP.generate(16, { alphabets: true, upperCase: true, specialChar: false, });
+        const user = await User.create({ mobile, otp, referCode });
         console.log(user);
         res.status(200).json({ message: "OTP is Send ", otp: otp, data: user });
     } catch (err) {
-        res.status(400).json({
-            message: err.message,
-        });
+        res.status(400).json({ message: err.message, });
     }
 };
 exports.verifyOTP = async (req, res) => {
@@ -604,11 +591,7 @@ module.exports.GetUserProfiles = async (req, res) => {
     // console.log(req.user);
     try {
         const UpdateUser = await User.findById(req.params.id);
-        return res.status(200).json({
-            success: true,
-            msg: "UpdateUser",
-            data: UpdateUser,
-        });
+        return res.status(200).json({ success: true, msg: "get user", data: UpdateUser, });
     } catch (error) {
         return res.status(400).json({
             success: false,
