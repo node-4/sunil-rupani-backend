@@ -123,35 +123,35 @@ exports.verifyOTPSignedIn = async (req, res, next) => {
 };
 
 // SignIn
-module.exports.login = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        // console.log(email);
-        // console.log(password)
-        if (!(email && password)) {
-            res.status(403).send("All input is required");
-        }
+// module.exports.login = async (req, res) => {
+//     try {
+//         const { email, password } = req.body;
+//         // console.log(email);
+//         // console.log(password)
+//         if (!(email && password)) {
+//             res.status(403).send("All input is required");
+//         }
 
-        const user = await User.findOne({ email });
-        console.log(user);
+//         const user = await User.findOne({ email });
+//         console.log(user);
 
-        if (!user)
-            res.status(402).json({
-                message: "This Number is not registered",
-            });
-        const isPassword = bcrypt.compareSync(password, user.password);
-        if (isPassword) {
-            jwt.sign({ id: user._id }, JWTkey, (err, token) => {
-                if (err) return res.status(401).send("Invalid Credentials");
-                console.log(token);
-                return res.status(200).send({ user, token });
-            });
-        }
-    } catch (err) {
-        console.log(err);
-        res.status(400).json({ message: err.message });
-    }
-};
+//         if (!user)
+//             res.status(402).json({
+//                 message: "This Number is not registered",
+//             });
+//         const isPassword = bcrypt.compareSync(password, user.password);
+//         if (isPassword) {
+//             jwt.sign({ id: user._id }, JWTkey, (err, token) => {
+//                 if (err) return res.status(401).send("Invalid Credentials");
+//                 console.log(token);
+//                 return res.status(200).send({ user, token });
+//             });
+//         }
+//     } catch (err) {
+//         console.log(err);
+//         res.status(400).json({ message: err.message });
+//     }
+// };
 
 exports.protect = catchAsync(async (req, res, next) => {
     // 1) Getting Token & check if its there!
@@ -616,7 +616,7 @@ exports.socialLogin = async (req, res) => {
             });
         } else {
             const referCode = newOTP.generate(16, { alphabets: true, upperCase: true, specialChar: false, });
-            const newUser = await User.create({ firstName, lastName, mobile, email,referCode });
+            const newUser = await User.create({ firstName, lastName, mobile, email, referCode });
             if (newUser) {
                 jwt.sign({ id: newUser._id }, JWTkey, (err, token) => {
                     if (err) {
