@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: new Date().toISOString(),
         },
-        password: {
+        gender: {
             type: String,
             required: false,
         },
@@ -23,6 +23,11 @@ const userSchema = new mongoose.Schema(
             required: false,
         },
         address: {
+            type: String,
+            default: "",
+            required: false,
+        },
+        address1: {
             type: String,
             default: "",
             required: false,
@@ -145,7 +150,7 @@ const userSchema = new mongoose.Schema(
         },
 
         ActiveNotification: { type: Boolean, default: false },
-
+        completeProfile: { type: Boolean, default: false },
         following: {
             type: [mongoose.Schema.Types.ObjectId],
             ref: "astrologer",

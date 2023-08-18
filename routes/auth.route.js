@@ -14,43 +14,16 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage });
 router.post("/register", authController.register);
+router.post("/verify/:id", authController.verifyOTP);
+router.put("/signUp/:id", authController.signUpUser);
+router.post("/login", authController.login);
 router.post("/resend-otp/:id", authController.resendOtp);
 router.post("/socialLogin", authController.socialLogin);
-router.put("/signUp/:id", authController.signUpUser);
 router.put("/signup2/:id", authController.signup2);
-router.post("/login", authController.login);
-router.post("/verify/:id", authController.verifyOTP);
 router.post("/loginwithmobile", authController.loginWithMobile);
 router.post("/verifymobileotp/:id", authController.verifyMobileOtp);
 router.post("/forgotpassword", authController.forgetPassword);
 router.patch("/resetpassword/:id", authController.resetPassword);
-
-//router.post("/sendOTP", authController.sendOTP);
-// router.post("/verify", authController.verifyOTP);
-// router.post("/sign/verify", authController.verifyOTPSignedIn);
-// router.post("/login", authController.login);
-
-router.post(
-    "/update-profile",
-    isAuthenticated,
-    authController.updateUserProfile
-);
-router.get(
-    "/view-user-profiles/:id",
-    authController.GetUserProfiles
-);
-
-// router.post(
-//   "/user-blog",
-//   upload.single("myField"),
-//   isAuthenticated,
-//   authController.postuserBlogs
-// );
-// router.patch(
-//   "/edit-user-blog/:id",
-//   upload.single("myField"),
-//   isAuthenticated,
-//   authController.UpdateBlogs
-// );
-
+router.put("/update-profile/:id", isAuthenticated, authController.updateUserProfile);
+router.get("/view-user-profiles/:id", authController.GetUserProfiles);
 module.exports = router;

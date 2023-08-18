@@ -26,24 +26,6 @@ const generateJwtToken = (id) => {
         expiresIn: "30d",
     });
 };
-
-exports.resendOtp = async (req, res) => {
-    try {
-        const otp = Math.floor(1000 + Math.random() * 9000);
-        const user = await User.findById(req.params.id, { otp: otp }, { new: true });
-        if (!user) {
-            return res.status(401).json({ message: "No User Found ", });
-        } else {
-            let update = await User.findByIdAndUpdate({ _id: user._id }, { $set: { otp: otp } }, { new: true })
-            // const data = await sendSMS(user.mobile, otp);
-            res.status(200).json({ message: "OTP is Send ", otp: otp, data: update, });
-        }
-    } catch (err) {
-        res.status(400).json({
-            message: err.message,
-        });
-    }
-};
 exports.register = async (req, res) => {
     try {
         const { mobile } = req.body;
@@ -99,7 +81,23 @@ exports.verifyOTP = async (req, res) => {
 //       console.log("wrong OTP !!");
 //     });
 // };
-
+exports.resendOtp = async (req, res) => {
+    try {
+        const otp = Math.floor(1000 + Math.random() * 9000);
+        const user = await User.findById(req.params.id, { otp: otp }, { new: true });
+        if (!user) {
+            return res.status(401).json({ message: "No User Found ", });
+        } else {
+            let update = await User.findByIdAndUpdate({ _id: user._id }, { $set: { otp: otp } }, { new: true })
+            // const data = await sendSMS(user.mobile, otp);
+            res.status(200).json({ message: "OTP is Send ", otp: otp, data: update, });
+        }
+    } catch (err) {
+        res.status(400).json({
+            message: err.message,
+        });
+    }
+};
 exports.verifyOTPSignedIn = async (req, res, next) => {
     const user = await User.findOne({ mobile_Number: req.body.mobile_Number });
     console.log(user);
@@ -121,40 +119,59 @@ exports.verifyOTPSignedIn = async (req, res, next) => {
             });
         });
 };
+module.exports.signUpUser = async (req, res) => {
+    const { firstName, lastName, language, mobile, email, password, confirmpassword, address, address1, country, state, district, pincode, } = req.body;
+    try {
+        const emailRegistered = await User.findOne({ _id: { $ne: req.params.id }, email: email });
+        if (emailRegistered) { return res.status(402).send({ message: ` ${email}` + " already exists" }); }
+        if (password !== confirmpassword) {
+            res.status(401).json({ message: "Password is not match " });
+        }
+        const referCode = newOTP.generate(16, { alphabets: true, upperCase: true, specialChar: false, });
+        const hashedPassword = bcrypt.hashSync(password, 8);
+        const confirmPassword = bcrypt.hashSync(password, 8);
+        const otpGenerated = Math.floor(100 + Math.random() * 9000);
+        const Existing = await User.findOne({ _id: { $ne: req.params.id }, mobile: mobile });
+        if (Existing) {
+            return res.status(402).send({ message: ` ${mobile} already exists` });
+        } else {
+            const newUser = await User.findByIdAndUpdate(req.params.id, { $set: { completeProfile: true, firstName, lastName, language, mobile, email, password: hashedPassword, confirmpassword, address, address1, country, state, district, pincode, referCode: referCode, } }, { new: true });
+            const walletObj = { userId: newUser._id.toString(), user: newUser._id, balance: 0, };
+            const w = await Wallet.create(walletObj);
+            return res.status(201).send({ message: "signed Up successfully", data: newUser, });
+        }
 
-// SignIn
-// module.exports.login = async (req, res) => {
-//     try {
-//         const { email, password } = req.body;
-//         // console.log(email);
-//         // console.log(password)
-//         if (!(email && password)) {
-//             res.status(403).send("All input is required");
-//         }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: error.message });
+    }
+};
+exports.login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
 
-//         const user = await User.findOne({ email });
-//         console.log(user);
+        if (!(email && password)) {
+            res.status(400).send("email and password are required");
+        }
 
-//         if (!user)
-//             res.status(402).json({
-//                 message: "This Number is not registered",
-//             });
-//         const isPassword = bcrypt.compareSync(password, user.password);
-//         if (isPassword) {
-//             jwt.sign({ id: user._id }, JWTkey, (err, token) => {
-//                 if (err) return res.status(401).send("Invalid Credentials");
-//                 console.log(token);
-//                 return res.status(200).send({ user, token });
-//             });
-//         }
-//     } catch (err) {
-//         console.log(err);
-//         res.status(400).json({ message: err.message });
-//     }
-// };
+        const user = await User.findOne({ email });
 
+        if (!user)
+            res.status(400).json({
+                message: "email is not registered",
+            });
+        const isPassword = await compare(password, user.password);
+        if (isPassword) {
+            jwt.sign({ id: user._id }, JWTkey, (err, token) => {
+                if (err) return res.status(400).send("Invalid Credentials");
+                res.status(200).send({ token, user });
+            });
+        }
+    } catch (err) {
+        console.log(err);
+    }
+};
 exports.protect = catchAsync(async (req, res, next) => {
-    // 1) Getting Token & check if its there!
     let token;
     if (
         req.headers.authorization &&
@@ -193,7 +210,6 @@ exports.protect = catchAsync(async (req, res, next) => {
     res.locals.user = currentUser;
     next();
 });
-
 exports.isAuthenticated = async (req, res, next) => {
     if (req.headers.authorization) {
         console.log("entered authorization");
@@ -235,7 +251,6 @@ exports.isAuthenticated = async (req, res, next) => {
         return res.status(401).json({ message: "Authorization required" });
     }
 };
-
 exports.userMiddleware = async (req, res, next) => {
     console.log(req.user);
     const user = await User.findById(req.user);
@@ -248,212 +263,18 @@ exports.userMiddleware = async (req, res, next) => {
         next();
     }
 };
-
-// Verify
-
-module.exports.signUpUser = async (req, res) => {
-    const {
-        firstName,
-        lastName,
-        password,
-        confirmpassword,
-        gallery,
-        address,
-        email,
-        mobile,
-        country,
-        state,
-        district,
-        pincode,
-        highestQualification,
-        collegeOrInstitute,
-        passingYear,
-        govDocument,
-        language,
-        rashi,
-
-        desc,
-        skills,
-        specification,
-        fees,
-        rating,
-        link,
-        aboutMe,
-        gender,
-        dailyhoures,
-        experience,
-    } = req.body;
-    console.log(req.body);
-
-    // Check if user already exist
-    const Existing = await User.findOne({ mobile });
-    if (Existing) {
-        return res.status(402).send({ message: ` ${mobile} already exists` });
-    }
-    const emailRegistered = await User.findOne({ email });
-    if (emailRegistered) {
-        return res
-            .status(402)
-            .send({ message: ` ${email}` + " already exists" });
-    }
-    if (password !== confirmpassword) {
-        res.status(401).json({ message: "Password is not match " });
-    }
-    // encryptedPassword = await bcrypt.hashSync(password, 10);
-    const referCode = newOTP.generate(16, {
-        alphabets: true,
-        upperCase: true,
-        specialChar: false,
-    });
-    const hashedPassword = bcrypt.hashSync(password, 8);
-    const confirmPassword = bcrypt.hashSync(password, 8);
-    const otpGenerated = Math.floor(100 + Math.random() * 9000);
-    try {
-        const newUser = await User.findByIdAndUpdate(
-            req.params.id,
-            {
-                firstName,
-                lastName,
-                address,
-                gallery,
-                referCode: referCode,
-                email,
-                // mobile,
-                country,
-                state,
-                district,
-                pincode,
-                highestQualification,
-                collegeOrInstitute,
-                passingYear,
-                govDocument,
-                language,
-                rashi,
-                desc,
-                skills,
-                specification,
-                fees,
-                rating,
-                link,
-                aboutMe,
-                gender,
-                password: hashedPassword,
-                confirmpassword: confirmPassword,
-                otp: otpGenerated,
-                dailyhoures: parseInt(dailyhoures),
-                experience: experience,
-            },
-            { new: true }
-        );
-
-        if (req.body.referCode) {
-            const astro = await astrologer.findOne({
-                referCode: req.body.referCode,
-            });
-            let id = undefined;
-            if (astro) {
-                id = astro._id;
-            }
-            const user1 = await User.findOne({ referCode: req.body.referCode });
-            if (user1) {
-                id = user1._id;
-            }
-            if (id !== undefined) {
-                // const id = astro._id || user1._id;
-                const user = await wallet.findOne({ userId: id });
-                user.balance += 200;
-                user.transactions.push({
-                    type: "credit",
-                    amount: 200,
-                    description: "Refer Bonus",
-                });
-                await user.save();
-                // console.log(user);
-            }
-        }
-        const walletObj = {
-            userId: newUser._id.toString(),
-            user: newUser._id,
-            balance: 0,
-        };
-        console.log(walletObj);
-        const w = await Wallet.create(walletObj);
-        // console.log("Wallet created ", w);
-        // sendSMS(`+91${mobile_Number}`, otpGenerated)
-        newUser.wallet = w;
-        await newUser.save();
-        return res.status(201).send({
-            message: "signed Up successfully",
-            data: newUser,
-            // otp: otpGenerated,
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: error.message });
-    }
-};
 exports.signup2 = async function (req, res) {
     const { id } = req.params;
-    const {
-        highestQualification,
-        collegeOrInstitute,
-        passingYear,
-        govDocument,
-        experience,
-        skills,
-    } = req.body;
+    const { highestQualification, collegeOrInstitute, passingYear, govDocument, experience, skills, } = req.body;
     try {
         const otpGenerated = Math.floor(100 + Math.random() * 9000);
-        const user = await User.findByIdAndUpdate(
-            id,
-            {
-                highestQualification,
-                collegeOrInstitute,
-                passingYear,
-                govDocument,
-                experience,
-                skills,
-                otp: otpGenerated,
-            },
-            { new: true }
-        );
+        const user = await User.findByIdAndUpdate(id, { $set: { highestQualification, collegeOrInstitute, passingYear, govDocument, experience, skills, otp: otpGenerated, } }, { new: true });
         res.status(200).json({ userId: user._id, otp: otpGenerated });
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: error.message });
     }
 };
-// exports.verifyOTP = async (req, res) => {
-//     try {
-//         const { otp } = req.body;
-
-//         const data = await User.findOne({ _id: req.params.id });
-//         if (!data) {
-//             return res.status(401).json({
-//                 message: "Your Otp is Wrong",
-//             });
-//         }
-//         if (data.otp == otp) {
-//             // await astrologer.findOneAndUpdate(
-//             //     { _id: req.params.id },
-//             //     { otp: "" },
-//             //     { new: true }
-//             // );
-//             return res.status(200).json({
-//                 message: "Your Otp is verified",
-//             });
-//         }
-//         return res.status(401).json({
-//             message: "Your Otp is Wrong",
-//         });
-//     } catch (err) {
-//         res.status(400).json({
-//             message: err.message,
-//         });
-//     }
-// };
-
-// SignIn
 exports.loginWithMobile = async (req, res) => {
     try {
         const user = await User.findOne({ mobile: req.body.mobile });
@@ -461,11 +282,7 @@ exports.loginWithMobile = async (req, res) => {
             return res.status(404).send({ message: "you are not registered" });
         }
         const otpGenerated = Math.floor(100 + Math.random() * 9000);
-        await User.findOneAndUpdate(
-            { mobile: req.body.mobile },
-            { otp: otpGenerated },
-            { new: true }
-        );
+        await User.findOneAndUpdate({ mobile: req.body.mobile }, { otp: otpGenerated }, { new: true });
         res.status(200).send({ userId: user._id, otp: otpGenerated });
     } catch (err) {
         console.log(err.message);
@@ -475,7 +292,6 @@ exports.loginWithMobile = async (req, res) => {
 exports.verifyMobileOtp = async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
-        // console.log(user);
         if (!user) {
             return res.status(404).send({ message: "you are not found" });
         }
@@ -492,32 +308,6 @@ exports.verifyMobileOtp = async (req, res) => {
         res.status(400).send({ error: error.message });
     }
 };
-exports.login = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-
-        if (!(email && password)) {
-            res.status(400).send("email and password are required");
-        }
-
-        const user = await User.findOne({ email });
-
-        if (!user)
-            res.status(400).json({
-                message: "email is not registered",
-            });
-        const isPassword = await compare(password, user.password);
-        if (isPassword) {
-            jwt.sign({ id: user._id }, JWTkey, (err, token) => {
-                if (err) return res.status(400).send("Invalid Credentials");
-                res.status(200).send({ token, user });
-            });
-        }
-    } catch (err) {
-        console.log(err);
-    }
-};
-
 exports.forgetPassword = async (req, res) => {
     try {
         const { email } = req.body;
@@ -539,7 +329,6 @@ exports.forgetPassword = async (req, res) => {
         });
     }
 };
-
 exports.resetPassword = async (req, res) => {
     try {
         const { id } = req.params;
@@ -565,18 +354,14 @@ exports.resetPassword = async (req, res) => {
         });
     }
 };
-
-//patch api
-module.exports.updateUserProfile = async (req, res) => {
+exports.updateUserProfile = async (req, res) => {
     try {
-        await User.findByIdAndUpdate({ _id: req.body.id }, req.body, {
-            new: true,
-        });
-        res.status(200).json({
-            message: "Update is successfull",
-            status: true,
-            data: UpdateUser,
-        });
+        const emailRegistered = await User.findOne({ _id: { $ne: req.params.id }, email: email });
+        if (emailRegistered) {
+            return res.status(402).send({ message: ` ${email}` + " already exists" });
+        }
+        await User.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true, });
+        res.status(200).json({ message: "Update is successfull", status: true, data: UpdateUser, });
     } catch (err) {
         res.status(400).json({
             message: "Update is successfull",
@@ -584,10 +369,7 @@ module.exports.updateUserProfile = async (req, res) => {
         });
     }
 };
-
-// /get api
-
-module.exports.GetUserProfiles = async (req, res) => {
+exports.GetUserProfiles = async (req, res) => {
     // console.log(req.user);
     try {
         const UpdateUser = await User.findById(req.params.id);
@@ -599,7 +381,6 @@ module.exports.GetUserProfiles = async (req, res) => {
         });
     }
 };
-
 exports.socialLogin = async (req, res) => {
     try {
         const { firstName, lastName, email, mobile } = req.body;

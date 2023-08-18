@@ -41,10 +41,10 @@ router.put(
 
 //astrologer
 router.post("/register", astroControllers.register);
+router.post("/verify/:id", astroControllers.verifyOTP);
 router.put("/signup/:id", astroControllers.signUpUser);
 router.put("/signup2/:id", astroControllers.signup2);
 router.post("/login", astroControllers.login);
-router.post("/verify/:id", astroControllers.verifyOTP);
 router.post("/loginwithmobile", astroControllers.loginWithMobile);
 router.post("/verifymobileotp/:id", astroControllers.verifyMobileOtp);
 router.get("/resend-otp/:id", astroControllers.resendOtp);

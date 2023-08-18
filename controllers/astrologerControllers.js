@@ -15,7 +15,6 @@ const AstrologerFee = require("../models/astrologerFee");
 const review = require("../models/review");
 const feedback = require("../models/feedback");
 const Wallet = require("../models/wallet");
-const wallet = require("../models/wallet");
 
 const sendSMS = async (to, otp) => {
     const from = "+19287568632";
@@ -62,9 +61,7 @@ exports.register = async (req, res) => {
         const { mobile } = req.body;
         const mobileExists = await astrologer.findOne({ mobile });
         if (mobileExists) {
-            return res.status(401).json({
-                message: "Mobile Number Already Exists",
-            });
+            return res.status(401).json({ message: "Mobile Number Already Exists", });
         }
         const otp = Math.floor(1000 + Math.random() * 9000);
         const user = await astrologer.create({ mobile, otp });
@@ -76,104 +73,27 @@ exports.register = async (req, res) => {
         });
     }
 };
-
 exports.signUpUser = async (req, res) => {
-    const {
-        firstName,
-        lastName,
-        password,
-        confirmpassword,
-        gallery,
-        address,
-        email,
-        // mobile,
-        country,
-        state,
-        district,
-        pincode,
-        highestQualification,
-        collegeOrInstitute,
-        passingYear,
-        govDocument,
-        language,
-        rashi,
-        desc,
-        skills,
-        specification,
-        fees,
-        rating,
-        link,
-        aboutMe,
-        gender,
-        dailyhoures,
-        experience,
-    } = req.body;
-    console.log(req.body);
-
-    // Check if user already exist
-    // const Existing = await astrologer.findOne({ mobile });
-    // if (Existing) {
-    //     return res.status(402).send({ message: ` ${mobile} already exists` });
-    // }
-    const emailRegistered = await astrologer.findOne({ email });
-    if (emailRegistered) {
-        return res
-            .status(402)
-            .send({ message: ` ${email}` + " already exists" });
-    }
-    if (password !== confirmpassword) {
-        res.status(401).json({ message: "Password is not match " });
-    }
-    encryptedPassword = await bcrypt.hash(password, 10);
-    const referCode = newOTP.generate(10, {
-        alphabets: true,
-        upperCase: true,
-        specialChar: false,
-    });
-    const hashedPassword = await encrypt(password);
-    const confirmPassword = await encrypt(confirmpassword);
-    const otpGenerated = Math.floor(100 + Math.random() * 9000);
-    const discountedFee = req.body.discountedFee
-        ? req.body.discountedFee
-        : fees;
     try {
-        const newUser = await astrologer.findByIdAndUpdate(
-            req.params.id,
-            {
-                firstName,
-                lastName,
-                address,
-                gallery,
-                referCode,
-                email,
-                // mobile,
-                country,
-                discountedFee,
-                state,
-                district,
-                pincode,
-                highestQualification,
-                collegeOrInstitute,
-                passingYear,
-                govDocument,
-                language,
-                rashi,
-                desc,
-                skills,
-                specification,
-                fees,
-                rating,
-                link,
-                aboutMe,
-                gender,
-                password: hashedPassword,
-                confirmpassword: confirmPassword,
-                otp: otpGenerated,
-                dailyhoures: parseInt(dailyhoures),
-                experience: experience,
-            },
-            { new: true }
-        );
+        const { firstName, lastName, language, mobile, email, password, confirmpassword, address, address1, country, state, district, pincode, } = req.body;
+        const emailRegistered = await astrologer.findOne({ _id: { $ne: req.params.id }, email });
+        if (emailRegistered) {
+            return res.status(402).send({ message: ` ${email}` + " already exists" });
+        }
+        const Existing = await astrologer.findOne({ _id: { $ne: req.params.id }, mobile: mobile });
+        if (Existing) {
+            return res.status(402).send({ message: ` ${mobile} already exists` });
+        }
+        if (password !== confirmpassword) {
+            res.status(401).json({ message: "Password is not match " });
+        }
+        encryptedPassword = await bcrypt.hash(password, 10);
+        const referCode = newOTP.generate(10, { alphabets: true, upperCase: true, specialChar: false, });
+        const hashedPassword = await encrypt(password);
+        const confirmPasswords = await encrypt(confirmpassword);
+        const otpGenerated = Math.floor(100 + Math.random() * 9000);
+        const discountedFee = req.body.discountedFee ? req.body.discountedFee : fees;
+        const newUser = await astrologer.findByIdAndUpdate(req.params.id, { $set: { completeProfile: true, firstName, lastName, language, mobile, email, password: hashedPassword, confirmpassword: confirmPasswords, address, address1, country, state, district, pincode, referCode: referCode } }, { new: true });
         if (req.body.referCode) {
             const astro = await astrologer.findOne({
                 referCode: req.body.referCode,

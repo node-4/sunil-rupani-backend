@@ -31,6 +31,11 @@ const AstrologerSchema = new mongoose.Schema(
             required: false,
             default: "",
         },
+        address1: {
+            type: String,
+            default: "",
+            required: false,
+        },
         email: {
             type: String,
             required: false,
