@@ -122,14 +122,14 @@ exports.verifyOTPSignedIn = async (req, res, next) => {
         });
 };
 module.exports.signUpUser = async (req, res) => {
-    const { firstName, lastName, language, mobile, email, password, confirmpassword, address, address1, country, state, district, pincode, } = req.body;
+    const { firstName, lastName, language, mobile, email, password, confirmpassword, address, address1, country, state, district, pincode, referCode } = req.body;
     try {
         const emailRegistered = await User.findOne({ _id: { $ne: req.params.id }, email: email });
         if (emailRegistered) { return res.status(402).send({ message: ` ${email}` + " already exists" }); }
         if (password !== confirmpassword) {
             res.status(401).json({ message: "Password is not match " });
         }
-        const referCode = newOTP.generate(16, { alphabets: true, upperCase: true, specialChar: false, });
+        const myReferCode = newOTP.generate(16, { alphabets: true, upperCase: true, specialChar: false, });
         const hashedPassword = bcrypt.hashSync(password, 8);
         const confirmPassword = bcrypt.hashSync(password, 8);
         const otpGenerated = Math.floor(100 + Math.random() * 9000);
@@ -137,7 +137,15 @@ module.exports.signUpUser = async (req, res) => {
         if (Existing) {
             return res.status(402).send({ message: ` ${mobile} already exists` });
         } else {
-            const newUser = await User.findByIdAndUpdate(req.params.id, { $set: { completeProfile: true, firstName, lastName, language, mobile, email, password: hashedPassword, confirmpassword, address, address1, country, state, district, pincode, referCode: referCode, } }, { new: true });
+            let referStatus;
+            if (referCode != (null || undefined)) {
+                referStatus = "used";
+                const emailRegistered = await User.findOne({ referCode: referCode });
+                if (emailRegistered) {
+                    const newUser = await User.findByIdAndUpdate({ _id: emailRegistered._id }, { $push: { refferUser: req.params.id } }, { new: true });
+                }
+            }
+            const newUser = await User.findByIdAndUpdate(req.params.id, { $set: { completeProfile: true, firstName, referStatus, lastName, language, mobile, email, password: hashedPassword, confirmpassword, address, address1, country, state, district, pincode, referCode: myReferCode, } }, { new: true });
             const walletObj = { userId: newUser._id.toString(), user: newUser._id, balance: 0, };
             const w = await Wallet.create(walletObj);
             return res.status(201).send({ message: "signed Up successfully", data: newUser, });

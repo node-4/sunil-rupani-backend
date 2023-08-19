@@ -140,15 +140,16 @@ const userSchema = new mongoose.Schema(
             default: "",
             required: false,
         },
-
         referCode: { type: String, unique: false },
-
+        refferUser: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+        }],
         referStatus: {
             type: String,
             default: "unused",
             enum: ["used", "unused"],
         },
-
         ActiveNotification: { type: Boolean, default: false },
         completeProfile: { type: Boolean, default: false },
         following: {
