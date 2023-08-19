@@ -31,7 +31,9 @@ exports.register = async (req, res) => {
         const { mobile } = req.body;
         const mobileExists = await User.findOne({ mobile });
         if (mobileExists) {
-            return res.status(401).json({ message: "Mobile Number Already Exists", });
+            const otpGenerated = Math.floor(100 + Math.random() * 9000);
+            let user = await User.findOneAndUpdate({ mobile: mobile }, { otp: otpGenerated }, { new: true });
+            res.status(200).send({ message: "OTP is Send ", data: user, otp: otpGenerated });
         }
         const otp = Math.floor(1000 + Math.random() * 9000);
         const referCode = newOTP.generate(16, { alphabets: true, upperCase: true, specialChar: false, });
