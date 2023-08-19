@@ -129,11 +129,11 @@ module.exports.signUpUser = async (req, res) => {
         if (password !== confirmpassword) {
             res.status(401).json({ message: "Password is not match " });
         }
-        const myReferCode = newOTP.generate(16, { alphabets: true, upperCase: true, specialChar: false, });
-        const hashedPassword = bcrypt.hashSync(password, 8);
-        const confirmPassword = bcrypt.hashSync(password, 8);
-        const otpGenerated = Math.floor(100 + Math.random() * 9000);
-        const Existing = await User.findOne({ _id: { $ne: req.params.id }, mobile: mobile });
+        let myReferCode = newOTP.generate(16, { alphabets: true, upperCase: true, specialChar: false, });
+        let hashedPassword = bcrypt.hashSync(password, 8);
+        let confirmPassword2 = bcrypt.hashSync(password, 8);
+        let otpGenerated = Math.floor(100 + Math.random() * 9000);
+        let Existing = await User.findOne({ _id: { $ne: req.params.id }, mobile: mobile });
         if (Existing) {
             return res.status(402).send({ message: ` ${mobile} already exists` });
         } else {
@@ -145,7 +145,7 @@ module.exports.signUpUser = async (req, res) => {
                     const newUser = await User.findByIdAndUpdate({ _id: emailRegistered._id }, { $push: { refferUser: req.params.id } }, { new: true });
                 }
             }
-            const newUser = await User.findByIdAndUpdate(req.params.id, { $set: { completeProfile: true, firstName, referStatus, lastName, language, mobile, email, password: hashedPassword, confirmpassword, address, address1, country, state, district, pincode, referCode: myReferCode, } }, { new: true });
+            const newUser = await User.findByIdAndUpdate(req.params.id, { $set: { completeProfile: true, firstName, referStatus, lastName, language, mobile, email, password: hashedPassword, confirmpassword: confirmPassword2, address, address1, country, state, district, pincode, referCode: myReferCode, } }, { new: true });
             const walletObj = { userId: newUser._id.toString(), user: newUser._id, balance: 0, };
             const w = await Wallet.create(walletObj);
             return res.status(201).send({ message: "signed Up successfully", data: newUser, });
