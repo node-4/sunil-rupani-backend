@@ -382,7 +382,7 @@ exports.updateUserProfile = async (req, res) => {
 exports.GetUserProfiles = async (req, res) => {
     // console.log(req.user);
     try {
-        const UpdateUser = await User.findById(req.params.id);
+        const UpdateUser = await User.findById({ _id: req.params.id });
         return res.status(200).json({ success: true, msg: "get user", data: UpdateUser, });
     } catch (error) {
         return res.status(400).json({
