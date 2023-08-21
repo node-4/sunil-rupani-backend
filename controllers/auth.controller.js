@@ -366,17 +366,35 @@ exports.resetPassword = async (req, res) => {
 };
 exports.updateUserProfile = async (req, res) => {
     try {
-        const emailRegistered = await User.findOne({ _id: { $ne: req.params.id }, email: email });
-        if (emailRegistered) {
-            return res.status(402).send({ message: ` ${email}` + " already exists" });
+        const { firstName, lastName, nickName, ActiveNotification, religion } = req.body;
+        let findUser = await User.findOne({ _id: req.params.id });
+        if (!findUser) {
+            res.status(404).json({ message: "User id not found.", status: false });
+        } else {
+            let image;
+            if (req.file) {
+                image = req.file.path
+            }
+            let ActiveNotif;
+            if (ActiveNotification == "true") {
+                ActiveNotif = true
+            } else {
+                ActiveNotif = false
+            }
+            let obj = {
+                firstName: firstName || findUser.firstName,
+                lastName: lastName || findUser.lastName,
+                nickName: nickName || findUser.nickName,
+                profileImage: image || findUser.profileImage,
+                religion: religion || findUser.religion,
+                ActiveNotification: ActiveNotif || findUser.ActiveNotification
+            }
+            let UpdateUser = await User.findByIdAndUpdate({ _id: findUser._id }, { $set: obj }, { new: true });
+            res.status(200).json({ message: "Update is successfull", status: true, UpdateUser, });
         }
-        await User.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true, });
-        res.status(200).json({ message: "Update is successfull", status: true, data: UpdateUser, });
     } catch (err) {
-        res.status(400).json({
-            message: "Update is successfull",
-            status: false,
-        });
+        console.log(err);
+        res.status(400).json({ message: "Update is successfull", status: false, });
     }
 };
 exports.GetUserProfiles = async (req, res) => {

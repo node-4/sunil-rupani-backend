@@ -10,6 +10,14 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: false,
         },
+        nickName: {
+            type: String,
+            required: false,
+        },
+        religion: {
+            type: String,
+            required: false,
+        },
         created: {
             type: String,
             default: new Date().toISOString(),

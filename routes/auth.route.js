@@ -1,18 +1,13 @@
 const router = require("express").Router();
+require("dotenv").config();
 const authController = require("../controllers/auth.controller");
 const { isAuthenticated } = require("../controllers/auth.controller");
 var multer = require("multer");
-var storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, "public/images");
-    },
-    filename: function (req, file, cb) {
-        // console.log(file);
-        cb(null, file.originalname);
-    },
-});
-
-var upload = multer({ storage: storage });
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("cloudinary").v2;
+cloudinary.config({ cloud_name: process.env.CLOUD_NAME, api_key: process.env.CLOUD_KEY, api_secret: process.env.CLOUD_SECRET, });
+const storage = new CloudinaryStorage({ cloudinary: cloudinary, params: { folder: "sunilRupani/product", allowed_formats: ["jpg", "avif", "webp", "jpeg", "png", "PNG", "xlsx", "xls", "pdf", "PDF"], }, });
+const upload = multer({ storage: storage });
 router.post("/register", authController.register);
 router.post("/verify/:id", authController.verifyOTP);
 router.put("/signUp/:id", authController.signUpUser);
@@ -24,6 +19,6 @@ router.post("/loginwithmobile", authController.loginWithMobile);
 router.post("/verifymobileotp/:id", authController.verifyMobileOtp);
 router.post("/forgotpassword", authController.forgetPassword);
 router.patch("/resetpassword/:id", authController.resetPassword);
-router.put("/update-profile/:id", isAuthenticated, authController.updateUserProfile);
+router.put("/update-profile/:id", upload.single('image'), authController.updateUserProfile);
 router.get("/view-user-profiles/:id", authController.GetUserProfiles);
 module.exports = router;
