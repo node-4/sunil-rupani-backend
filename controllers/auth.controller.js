@@ -366,7 +366,8 @@ exports.resetPassword = async (req, res) => {
 };
 exports.updateUserProfile = async (req, res) => {
     try {
-        const { firstName, lastName, nickName, ActiveNotification, gender, religion } = req.body;
+
+        const { firstName, lastName, email, nickName, ActiveNotification, gender, religion, birthDate, birthTime, birthCity, birthCountry } = req.body;
         let findUser = await User.findOne({ _id: req.params.id });
         if (!findUser) {
             res.status(404).json({ message: "User id not found.", status: false });
@@ -388,7 +389,12 @@ exports.updateUserProfile = async (req, res) => {
                 profileImage: image || findUser.profileImage,
                 religion: religion || findUser.religion,
                 gender: gender || findUser.gender,
-                ActiveNotification: ActiveNotif || findUser.ActiveNotification
+                ActiveNotification: ActiveNotif || findUser.ActiveNotification,
+                email: email || findUser.email,
+                birthDate: birthDate || findUser.birthDate,
+                birthTime: birthTime || findUser.birthTime,
+                birthCity: birthCity || findUser.birthCity,
+                birthCountry: birthCountry || findUser.birthCountry,
             }
             let UpdateUser = await User.findByIdAndUpdate({ _id: findUser._id }, { $set: obj }, { new: true });
             res.status(200).json({ message: "Update is successfull", status: true, UpdateUser, });
