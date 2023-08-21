@@ -4,7 +4,6 @@ const catchAsync = require("../utils/catchAsync");
 exports.createWallet = async (req, res) => {
     try {
         const wallet = new Wallet({
-            userId: req.body.userId,
             user: req.body.user,
             astrologer: req.body.astrologer,
         });
@@ -18,7 +17,7 @@ exports.createWallet = async (req, res) => {
 // Get a user's wallet by userId
 exports.getWallet = async (req, res) => {
     try {
-        const wallet = await Wallet.findOne({ userId: req.params.userId });
+        const wallet = await Wallet.findOne({ $or: [{ user: req.params.userId }, { astrologer: req.params.userId }] });
         if (!wallet)
             return res.status(404).json({ message: "Wallet not found" });
         res.status(200).json({ data: wallet });
@@ -30,7 +29,7 @@ exports.getWallet = async (req, res) => {
 // Add a transaction to a user's wallet
 exports.addTransaction = async (req, res) => {
     try {
-        const wallet = await Wallet.findOne({ userId: req.params.userId });
+        const wallet = await Wallet.findOne({ $or: [{ user: req.params.userId }, { astrologer: req.params.userId }] });
         if (!wallet)
             return res.status(404).json({ message: "Wallet not found" });
         const transaction = req.body;

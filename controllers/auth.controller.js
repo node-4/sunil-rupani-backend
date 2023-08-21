@@ -146,7 +146,7 @@ module.exports.signUpUser = async (req, res) => {
                 }
             }
             const newUser = await User.findByIdAndUpdate(req.params.id, { $set: { completeProfile: true, firstName, referStatus, lastName, language, mobile, email, password: hashedPassword, confirmpassword: confirmPassword2, address, address1, country, state, district, pincode, referCode: myReferCode, } }, { new: true });
-            const walletObj = { userId: newUser._id.toString(), user: newUser._id, balance: 0, };
+            const walletObj = { user: newUser._id, balance: 0, };
             const w = await Wallet.create(walletObj);
             return res.status(201).send({ message: "signed Up successfully", data: newUser, });
         }
