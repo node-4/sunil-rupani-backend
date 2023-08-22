@@ -4,19 +4,15 @@ const userSchema = new mongoose.Schema(
     {
         firstName: {
             type: String,
-            required: false,
         },
         lastName: {
             type: String,
-            required: false,
         },
         nickName: {
             type: String,
-            required: false,
         },
         religion: {
             type: String,
-            required: false,
         },
         created: {
             type: String,
@@ -24,40 +20,32 @@ const userSchema = new mongoose.Schema(
         },
         gender: {
             type: String,
-            required: false,
         },
         password: {
             type: String,
-            required: false,
         },
         confirmpassword: {
             type: String,
-            required: false,
         },
         address: {
             type: String,
             default: "",
-            required: false,
         },
         address1: {
             type: String,
             default: "",
-            required: false,
         },
         email: {
             type: String,
             default: "",
-            required: false,
         },
         mobile: {
             type: String,
             default: "",
-            required: false,
         },
         profileImage: {
             type: String,
             default: "",
-            required: false,
         },
         role: {
             type: String,
@@ -66,17 +54,14 @@ const userSchema = new mongoose.Schema(
         country: {
             type: String,
             default: "",
-            required: false,
         },
         state: {
             type: String,
             default: "",
-            required: false,
         },
         district: {
             type: String,
             default: "",
-            required: false,
         },
         pincode: {
             type: String,
@@ -105,54 +90,44 @@ const userSchema = new mongoose.Schema(
         birthDate: {
             type: String,
             default: "",
-            required: false,
         },
         birthTime: {
             type: String,
             default: "",
-            required: false,
         },
         birthCity: {
             type: String,
             default: "",
-            required: false,
         },
         birthCountry: {
             type: String,
             default: "",
-            required: false,
         },
         birthState: {
             type: String,
             default: "",
-            required: false,
         },
         birthDistrict: {
             type: String,
             default: "",
-            required: false,
         },
         birthPincode: {
             type: String,
             default: "",
-            required: false,
         },
         birthLatitude: {
             type: String,
             default: "",
-            required: false,
         },
         birthLongitude: {
             type: String,
             default: "",
-            required: false,
         },
         birthTimezone: {
             type: String,
             default: "",
-            required: false,
         },
-        referCode: { type: String, unique: false },
+        referCode: { type: String },
         refferUser: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
