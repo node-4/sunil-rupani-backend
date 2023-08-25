@@ -4,15 +4,19 @@ const ObjectId = require("mongodb").ObjectID;
 //pos Banner--
 module.exports.addBanner = async (req, res) => {
   try {
-      const addBanner = await Banner.create({
-        desc: req.body.desc,
-        link: req.body.link
-      });
-      res.status(200).json({
-        msg: "Banner successfully added",
-        data: addBanner,
-        status: true,
-      });
+    let image;
+    if (req.file) {
+      image = req.file.path
+    }
+    const addBanner = await Banner.create({
+      desc: req.body.desc,
+      link: image
+    });
+    res.status(200).json({
+      msg: "Banner successfully added",
+      data: addBanner,
+      status: true,
+    });
   } catch (error) {
     res.status(400).json({
       message: err.message
