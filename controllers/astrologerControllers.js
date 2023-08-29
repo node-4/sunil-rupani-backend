@@ -183,18 +183,12 @@ exports.verifyOTP = async (req, res) => {
                 message: "Your Otp is Wrong",
             });
         }
-        if (data.otp == otp) {
-            // await astrologer.findOneAndUpdate(
-            //     { _id: req.params.id },
-            //     { otp: "" },
-            //     { new: true }
-            // );
-            return res.status(200).json({
-                message: "Your Otp is verified",
-            });
+        if (data.otp != req.body.otp) {
+            return res.status(400).send({ message: "Invalid OTP" });
         }
-        return res.status(401).json({
-            message: "Your Otp is Wrong",
+        const accessToken = jwt.sign({ id: data._id }, JWTkey, (err, token) => {
+            if (err) return res.status(400).send("Invalid Credentials");
+            res.status(200).send({ token, data });
         });
     } catch (err) {
         return res.status(400).json({
@@ -224,18 +218,15 @@ exports.loginWithMobile = async (req, res) => {
 exports.verifyMobileOtp = async (req, res) => {
     try {
         const user = await astrologer.findById(req.params.id);
-        // console.log(user);
         if (!user) {
             return res.status(404).send({ message: "you are not found" });
         }
-        // console.log(user.otp, " ", req.body.otp);
-        // console.log(parseInt(user.otp) == req.body.otp);
         if (user.otp != req.body.otp) {
             return res.status(400).send({ message: "Invalid OTP" });
         }
         const accessToken = jwt.sign({ id: user._id }, JWTkey, (err, token) => {
             if (err) return res.status(400).send("Invalid Credentials");
-            res.status(200).send({ token, user });
+            return res.status(200).send({ token, user });
         });
     } catch (error) {
         console.log(error.message);
