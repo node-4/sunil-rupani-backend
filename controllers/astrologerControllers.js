@@ -243,23 +243,25 @@ exports.verifyMobileOtp = async (req, res) => {
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
-
+        console.log(req.body);
         if (!(email && password)) {
             res.status(400).send("email and password are required");
         }
 
-        const user = await astrologer.findOne({ email });
-
+        const user = await astrologer.findOne({ email: email });
         if (!user)
             res.status(400).json({
                 message: "email is not registered",
             });
         const isPassword = await compare(password, user.password);
+        console.log(isPassword);
         if (isPassword) {
             jwt.sign({ id: user._id }, JWTkey, (err, token) => {
-                if (err) return res.status(400).send("Invalid Credentials");
+                if (err) return res.status(400).send({ message: "Invalid Credentials" });
                 res.status(200).send({ user, token });
             });
+        } else {
+            return res.status(400).send({ message: "Invalid Credentials" });
         }
     } catch (err) {
         console.log(err);
@@ -671,7 +673,10 @@ exports.getAstro = async (req, res) => {
 };
 exports.updateProfile1 = async (req, res) => {
     try {
-        const profile = { url: req.file.location, key: req.file.key };
+        let profile;
+        if (req.file) {
+            profile = { url: req.file.path, key: req.file.fileName };
+        }
         const astro = await astrologer.findByIdAndUpdate(
             req.params.id,
             { profileImage: profile },
