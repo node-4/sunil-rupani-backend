@@ -59,18 +59,20 @@ exports.resendOtp = async (req, res) => {
 exports.register = async (req, res) => {
     try {
         const { mobile } = req.body;
-        const mobileExists = await astrologer.findOne({ mobile });
+        const mobileExists = await astrologer.findOne({ mobile: mobile });
         if (mobileExists) {
-            return res.status(401).json({ message: "Mobile Number Already Exists", });
+            const otpGenerated = Math.floor(100 + Math.random() * 9000);
+            let user = await astrologer.findOneAndUpdate({ mobile: mobile }, { otp: otpGenerated }, { new: true });
+            return res.status(200).send({ message: "OTP is Send ", data: user, otp: otpGenerated });
+        } else {
+            const otp = Math.floor(1000 + Math.random() * 9000);
+            const referCode = newOTP.generate(16, { alphabets: true, upperCase: true, specialChar: false, });
+            const user = await astrologer.create({ mobile, otp, referCode });
+            console.log(user);
+            return res.status(200).json({ message: "OTP is Send ", otp: otp, data: user });
         }
-        const otp = Math.floor(1000 + Math.random() * 9000);
-        const user = await astrologer.create({ mobile, otp });
-        console.log(user);
-        res.status(200).json({ message: "OTP is Send ", otp: otp, data: user });
     } catch (err) {
-        res.status(400).json({
-            message: err.message,
-        });
+        return res.status(400).json({ message: err.message, });
     }
 };
 exports.signUpUser = async (req, res) => {
@@ -195,7 +197,7 @@ exports.verifyOTP = async (req, res) => {
             message: "Your Otp is Wrong",
         });
     } catch (err) {
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }
