@@ -87,7 +87,7 @@ exports.signUpUser = async (req, res) => {
             return res.status(402).send({ message: ` ${mobile} already exists` });
         }
         if (password !== confirmpassword) {
-            res.status(401).json({ message: "Password is not match " });
+            return res.status(401).json({ message: "Password is not match " });
         }
         encryptedPassword = await bcrypt.hash(password, 10);
         const referCode = newOTP.generate(10, { alphabets: true, upperCase: true, specialChar: false, });
