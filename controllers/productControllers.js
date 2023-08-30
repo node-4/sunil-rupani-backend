@@ -1,38 +1,18 @@
 const product = require("../models/product");
 
 exports.addproduct = async (req, res) => {
-    // const banner = req.files;
     try {
-        // const link = req.file.location;
-        // console.log(link);
-        console.log(req.files);
-        const {
-            name,
-
-            description,
-            price,
-            size,
-            color,
-            productCategory,
-            discountPercent,
-            highlights,
-        } = req.body;
-        console.log({
-            name,
-
-            description,
-            price,
-            size,
-            color,
-            productCategory,
-            highlights,
-        });
-        const images = req.files.map((file) => {
-            return { url: file.location, key: file.key };
-        });
-        req.body.image = images;
-        const discountedPrice =
-            price - Math.ceil(price * (discountPercent / 100));
+        const { name, description, price, size, color, productCategory, discountPercent, highlights, } = req.body;
+        let image = [];
+        if (req.files) {
+            for (let i = 0; i < req.files.length; i++) {
+                image.push(req.files[i].path)
+            }
+        }
+        req.body.image = image;
+        let discountedPrice = 0;
+        discountedPrice = price - Math.ceil(price * (discountPercent / 100));
+        req.body.discountedPrice = discountedPrice || 0;
         if (!(name && price && description)) {
             return res.status(400).json({
                 message: "please fill all the fields",
@@ -40,14 +20,14 @@ exports.addproduct = async (req, res) => {
         }
         console.log(req.body);
         const addBanner = await product.create(req.body);
-        res.status(200).json({
+        return res.status(200).json({
             msg: "product successfully added",
             data: addBanner,
             status: true,
         });
     } catch (error) {
         console.log(error);
-        res.status(400).json({
+        return res.status(400).json({
             message: error.message,
         });
     }
@@ -75,10 +55,10 @@ exports.getProducts = async (req, res) => {
                 data: [],
             });
         }
-        res.status(200).json({ status: "success", data: getproduct });
+        return res.status(200).json({ status: "success", data: getproduct });
     } catch (error) {
         console.log(error);
-        res.status(500).send({ error: error.message });
+        return res.status(500).send({ error: error.message });
     }
 };
 exports.getRecommendedProducts = async (req, res) => {
@@ -97,10 +77,10 @@ exports.getRecommendedProducts = async (req, res) => {
 
         const recommendedProducts = await product.aggregate(pipeline);
 
-        res.status(200).json({ data: recommendedProducts });
+        return res.status(200).json({ data: recommendedProducts });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
 };
 
@@ -177,7 +157,7 @@ exports.editProduct = async (req, res) => {
             console.log(updatedProduct);
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             msg: "product successfully Updated",
             data: updatedProduct,
         });
@@ -195,10 +175,10 @@ exports.getProduct = async (req, res) => {
                 data: [],
             });
         }
-        res.status(200).json({ status: "success", data: result });
+        return res.status(200).json({ status: "success", data: result });
     } catch (err) {
         console.log(err);
-        res.status(500).send({ error: err.message });
+        return res.status(500).send({ error: err.message });
     }
 };
 
@@ -211,7 +191,7 @@ exports.deleteProduct = async (req, res) => {
                 message: "product not found",
             });
         }
-        res.status(200).send({
+        return res.status(200).send({
             msg: "product  deleted successfully",
             status: true,
         });

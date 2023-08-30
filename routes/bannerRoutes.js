@@ -13,10 +13,12 @@ const {
   getBanner,
   editBanner,
   deleteBanner,
+  getBootomBanner
 } = require("../controllers/BannerController");
 
 router.post("/addBanner", upload.single('image'), addBanner);
 router.get("/getBanner", getBanner);
+router.get("/getBootomBanner", getBootomBanner);
 router.post("/editBanner/:id", editBanner);
 router.delete("/deleteBanner/:id", deleteBanner);
 

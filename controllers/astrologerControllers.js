@@ -44,14 +44,14 @@ exports.resendOtp = async (req, res) => {
             });
         } else {
             // const data = await sendSMS(user.mobile, otp);
-            res.status(200).json({
+            return res.status(200).json({
                 message: "OTP is Send ",
                 otp: otp,
                 data: user,
             });
         }
     } catch (err) {
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }
@@ -139,7 +139,7 @@ exports.signUpUser = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 exports.signup2 = async function (req, res) {
@@ -167,10 +167,10 @@ exports.signup2 = async function (req, res) {
             },
             { new: true }
         );
-        res.status(200).json({ userId: user._id, otp: otpGenerated });
+        return res.status(200).json({ userId: user._id, otp: otpGenerated });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 exports.verifyOTP = async (req, res) => {
@@ -188,7 +188,7 @@ exports.verifyOTP = async (req, res) => {
         }
         const accessToken = jwt.sign({ id: data._id }, JWTkey, (err, token) => {
             if (err) return res.status(400).send("Invalid Credentials");
-            res.status(200).send({ token, data });
+            return res.status(200).send({ token, data });
         });
     } catch (err) {
         return res.status(400).json({
@@ -209,10 +209,10 @@ exports.loginWithMobile = async (req, res) => {
             { otp: otpGenerated },
             { new: true }
         );
-        res.status(200).send({ userId: user._id, otp: otpGenerated });
+        return res.status(200).send({ userId: user._id, otp: otpGenerated });
     } catch (err) {
         console.log(err.message);
-        res.status(400).send({ message: err.message });
+        return res.status(400).send({ message: err.message });
     }
 };
 exports.verifyMobileOtp = async (req, res) => {
@@ -230,7 +230,7 @@ exports.verifyMobileOtp = async (req, res) => {
         });
     } catch (error) {
         console.log(error.message);
-        res.status(400).send({ error: error.message });
+        return res.status(400).send({ error: error.message });
     }
 };
 exports.login = async (req, res) => {
@@ -238,12 +238,12 @@ exports.login = async (req, res) => {
         const { email, password } = req.body;
         console.log(req.body);
         if (!(email && password)) {
-            res.status(400).send("email and password are required");
+            return res.status(400).send("email and password are required");
         }
 
         const user = await astrologer.findOne({ email: email });
         if (!user)
-            res.status(400).json({
+            return res.status(400).json({
                 message: "email is not registered",
             });
         const isPassword = await compare(password, user.password);
@@ -251,7 +251,7 @@ exports.login = async (req, res) => {
         if (isPassword) {
             jwt.sign({ id: user._id }, JWTkey, (err, token) => {
                 if (err) return res.status(400).send({ message: "Invalid Credentials" });
-                res.status(200).send({ user, token });
+                return res.status(200).send({ user, token });
             });
         } else {
             return res.status(400).send({ message: "Invalid Credentials" });
@@ -265,19 +265,19 @@ exports.ViewDataProfiles = async (req, res) => {
     try {
         const getDetails = await astrologer.findById(req.params.id);
         if (!getDetails) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: "Enter the correct id",
                 status: false,
             });
         } else {
-            res.status(200).json({
+            return res.status(200).json({
                 message: "Astrologer Details retrieved Successfully",
                 data: getDetails,
                 status: true,
             });
         }
     } catch (error) {
-        res.status(400).json({ message: error.message, status: false });
+        return res.status(400).json({ message: error.message, status: false });
     }
 };
 const Product = require("../models/product");
@@ -299,9 +299,9 @@ exports.SearchAstroNameLangSkills = async (req, res) => {
             ],
         });
         if (student.length == 0 && product.length == 0) {
-            res.status(404).json({ message: "data  not Found", status: false });
+            return res.status(404).json({ message: "data  not Found", status: false });
         } else {
-            res.status(200).json({
+            return res.status(200).json({
                 message: " Data  is found Successfully",
                 astrologer: student,
                 product: product,
@@ -310,7 +310,7 @@ exports.SearchAstroNameLangSkills = async (req, res) => {
         }
     } catch (error) {
         console.error(error.message);
-        res.status(500).json({ message: error.message, status: false });
+        return res.status(500).json({ message: error.message, status: false });
     }
 };
 exports.getAstrolgerById = async (req, res) => {
@@ -318,18 +318,18 @@ exports.getAstrolgerById = async (req, res) => {
         const getDetails = await astrologer.findById(req.params.id).lean();
         // .select({ _id: 1, firstName: 1, lastName: 1, skills: 1, aboutMe: 1, language: 1, specification: 1 });
         if (!getDetails) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: "Enter the correct id",
                 status: false,
             });
         }
-        res.status(200).json({
+        return res.status(200).json({
             data: getDetails,
             status: true,
         });
     } catch (error) {
         console.log(error.message);
-        res.status(400).json({ message: error.message, status: false });
+        return res.status(400).json({ message: error.message, status: false });
     }
 };
 
@@ -408,13 +408,13 @@ exports.updateAstrologer = async (req, res) => {
                 { new: true }
             );
         }
-        res.status(200).json({
+        return res.status(200).json({
             message: "profile updated successfully",
             status: true,
         });
     } catch (err) {
         console.log(err);
-        res.status(500).send(err.message);
+        return res.status(500).send(err.message);
     }
 };
 
@@ -424,12 +424,12 @@ exports.getAllBlogs = async (req, res) => {
         if (blogs.length === 0) {
             return res.status(404).send({ message: "No blogs found" });
         }
-        res.status(200).json({
+        return res.status(200).json({
             status: "success",
             data: blogs,
         });
     } catch (err) {
-        res.status(400).json({
+        return res.status(400).json({
             status: "failure",
             message: err.message,
         });
@@ -445,13 +445,13 @@ exports.deleteAstroName = async (req, res) => {
         if (!DeleteUser) {
             res.json({ message: "Enter the corret User  Name", status: false });
         } else {
-            res.status(200).json({
+            return res.status(200).json({
                 message: "User removed successfully",
                 status: true,
             });
         }
     } catch (error) {
-        res.status(400).json({ message: error.message, status: false });
+        return res.status(400).json({ message: error.message, status: false });
     }
 };
 
@@ -466,13 +466,13 @@ exports.deleteLanguages = async (req, res) => {
                 status: false,
             });
         } else {
-            res.status(200).json({
+            return res.status(200).json({
                 message: "Languages removed successfully",
                 status: true,
             });
         }
     } catch (error) {
-        res.status(400).json({ message: error.message, status: false });
+        return res.status(400).json({ message: error.message, status: false });
     }
 };
 
@@ -484,12 +484,12 @@ exports.GetAllAstro = async (req, res) => {
             return res.status(400).json({ message: "astrologer not found" });
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             status: "success",
             data: astro,
         });
     } catch (err) {
-        res.status(400).json({
+        return res.status(400).json({
             status: "failure",
             message: err.message,
         });
@@ -504,12 +504,12 @@ exports.getastroById = async (req, res) => {
             return res.status(400).json({ message: "astrologer not found" });
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             status: "success",
             data: astro,
         });
     } catch (err) {
-        res.status(400).json({
+        return res.status(400).json({
             status: "failure",
             message: err.message,
         });
@@ -592,7 +592,7 @@ exports.updateAstro = async (req, res) => {
             );
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             message: "Updated",
         });
     } catch (err) {
@@ -613,13 +613,13 @@ exports.forgetPassword = async (req, res) => {
         const otp = Math.floor(1000 + Math.random() * 9000);
         user.otp = otp;
         await user.save();
-        res.status(200).json({
+        return res.status(200).json({
             userId: user._id,
             message: "OTP sent to your registered mobile number",
             otp: otp,
         });
     } catch (err) {
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }
@@ -640,12 +640,12 @@ exports.resetPassword = async (req, res) => {
         user.password = bcrypt.hashSync(password, 8);
         user.confirmpassword = bcrypt.hashSync(confirmpassword, 8);
         await user.save();
-        res.status(200).json({
+        return res.status(200).json({
             message: "Password reset successfully",
         });
     } catch (err) {
         console.log(err.message);
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }
@@ -656,10 +656,10 @@ exports.getAstro = async (req, res) => {
         if (!astro) {
             return res.status(400).json({ message: "astrologer not found" });
         }
-        res.status(200).json({ message: "success", data: astro });
+        return res.status(200).json({ message: "success", data: astro });
     } catch (err) {
         console.log(err.message);
-        res.status(400).json({
+        return res.status(400).json({
             message: "something went wrong ",
         });
     }
@@ -675,10 +675,10 @@ exports.updateProfile1 = async (req, res) => {
             { profileImage: profile },
             { new: true }
         );
-        res.status(200).json({ message: "success", data: astro });
+        return res.status(200).json({ message: "success", data: astro });
     } catch (err) {
         console.log(err.message);
-        res.status(400).json({
+        return res.status(400).json({
             message: "something went wrong ",
         });
     }

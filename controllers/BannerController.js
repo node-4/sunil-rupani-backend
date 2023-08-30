@@ -10,15 +10,16 @@ module.exports.addBanner = async (req, res) => {
     }
     const addBanner = await Banner.create({
       desc: req.body.desc,
+      type: req.body.type,
       link: image
     });
-    res.status(200).json({
+    return res.status(200).json({
       msg: "Banner successfully added",
       data: addBanner,
       status: true,
     });
   } catch (error) {
-    res.status(400).json({
+    return res.status(400).json({
       message: err.message
     })
   }
@@ -28,12 +29,19 @@ module.exports.addBanner = async (req, res) => {
 module.exports.getBanner = async (req, res) => {
   try {
     const getBanner = await Banner.find();
-    res.status(200).json({ status: "success", data: getBanner });
+    return res.status(200).json({ status: "success", data: getBanner });
   } catch (error) {
     console.log(error);
   }
 };
-
+module.exports.getBootomBanner = async (req, res) => {
+  try {
+    const getBanner = await Banner.find({ type: "Bottom" });
+    return res.status(200).json({ status: "success", data: getBanner });
+  } catch (error) {
+    console.log(error);
+  }
+};
 //Update Banner--
 module.exports.editBanner = async (req, res) => {
   try {
@@ -55,7 +63,7 @@ module.exports.editBanner = async (req, res) => {
 module.exports.deleteBanner = async (req, res) => {
   try {
     const response = await Banner.findByIdAndDelete(req.params.id);
-    res.status(200).send({
+    return res.status(200).send({
       msg: "Banner deleted successfully",
       response: response,
       status: true,

@@ -473,7 +473,7 @@ exports.deleteFeedback = async (req, res) => {
 
 exports.GetAstroliveChanges = async (req, res) => {
     try {
-        const data = await astroSttus.find({ status: true }).limit(5).sort();
+        const data = await astroSttus.find({ status: true }).populate('astroId').limit(5).sort();
         res.status(200).json({ data: data });
     } catch (err) {
         res.status(400).json({
