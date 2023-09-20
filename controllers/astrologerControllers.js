@@ -144,29 +144,14 @@ exports.signUpUser = async (req, res) => {
 };
 exports.signup2 = async function (req, res) {
     const { id } = req.params;
-    const {
-        highestQualification,
-        collegeOrInstitute,
-        passingYear,
-        govDocument,
-        experience,
-        skills,
-    } = req.body;
+    const { highestQualification, collegeOrInstitute, passingYear, experience, skills, } = req.body;
     try {
+        let govDocument;
+        if (req.file) {
+            govDocument = req.file.path
+        }
         const otpGenerated = Math.floor(100 + Math.random() * 9000);
-        const user = await astrologer.findByIdAndUpdate(
-            id,
-            {
-                highestQualification,
-                collegeOrInstitute,
-                passingYear,
-                govDocument,
-                experience,
-                skills,
-                otp: otpGenerated,
-            },
-            { new: true }
-        );
+        const user = await astrologer.findByIdAndUpdate(id, { highestQualification, collegeOrInstitute, passingYear, govDocument, experience, skills, otp: otpGenerated, }, { new: true });
         return res.status(200).json({ userId: user._id, otp: otpGenerated });
     } catch (error) {
         console.log(error);
