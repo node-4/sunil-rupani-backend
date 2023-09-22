@@ -12,10 +12,10 @@ exports.createCartProductOrder = async (req, res) => {
             totalPrice,
         });
 
-        res.status(201).json(cartProductOrder);
+        return res.status(201).json(cartProductOrder);
     } catch (error) {
         console.log(error);
-        res.status(400).json(error.message);
+        return res.status(400).json(error.message);
     }
 };
 
@@ -34,10 +34,10 @@ exports.getCartProductOrders = async (req, res) => {
         if (result.length === 0) {
             return res.status(200).json({ message: "no orders found" });
         }
-        res.status(200).json(result);
+        return res.status(200).json(result);
     } catch (error) {
         console.log(error);
-        res.status(500).json(error.message);
+        return res.status(500).json(error.message);
     }
 };
 
@@ -50,10 +50,10 @@ exports.getCartProductOrderById = async (req, res) => {
                 .status(404)
                 .json({ error: "Cart Product Order not found" });
         }
-        res.status(200).json(cartProductOrder);
+        return res.status(200).json(cartProductOrder);
     } catch (error) {
         console.log(error);
-        res.status(500).json(error.message);
+        return res.status(500).json(error.message);
     }
 };
 
@@ -87,14 +87,14 @@ exports.updateCartProductOrder = async (req, res) => {
             (update) => (cartProductOrder[update] = req.body[update])
         );
         await cartProductOrder.save();
-        res.status(200).json({
+        return res.status(200).json({
             message: "order updated ",
             data: cartProductOrder,
         });
     } catch (error) {
         console.log(error);
 
-        res.status(400).json(error.message);
+        return res.status(400).json(error.message);
     }
 };
 
@@ -109,9 +109,9 @@ exports.deleteCartProductOrder = async (req, res) => {
                 .status(404)
                 .json({ error: "Cart Product Order not found" });
         }
-        res.status(200).json({ message: " Order deleted" });
+        return res.status(200).json({ message: " Order deleted" });
     } catch (error) {
         console.log(error);
-        res.status(500).json(error.message);
+        return res.status(500).json(error.message);
     }
 };

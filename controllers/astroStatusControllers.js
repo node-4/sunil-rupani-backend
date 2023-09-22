@@ -17,14 +17,14 @@ exports.AddStatus = async (req, res) => {
                 status: req.body.status,
             };
             const Data = await astro_Model.create(data);
-            res.status(200).json({
+            return res.status(200).json({
                 message: "History is Added",
                 details: Data,
             });
         }
     } catch (err) {
         console.log(err);
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }
@@ -38,12 +38,12 @@ exports.getStatus = async (req, res) => {
                 message: "No Call- history for this user  ",
             });
         } else {
-            res.status(200).json({
+            return res.status(200).json({
                 details: data,
             });
         }
     } catch (err) {
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }
@@ -60,13 +60,13 @@ exports.updateStatus = async (req, res) => {
                 message: "No Data Found",
             });
         } else {
-            res.status(200).json({
+            return res.status(200).json({
                 message: "Data Updated",
                 details: data,
             });
         }
     } catch (err) {
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }
@@ -83,13 +83,13 @@ exports.getAllStatus = async (req, res) => {
                 message: "No Astrologer is Online",
             });
         } else {
-            res.status(200).json({
+            return res.status(200).json({
                 details: data,
             });
         }
     } catch (err) {
         console.log(err);
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }

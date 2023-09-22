@@ -79,7 +79,7 @@ exports.login = async (req, res) => {
         const { email, password } = req.body;
 
         if (!(email && password)) {
-            res.status(400).send("All input is required");
+            return res.status(400).send("All input is required");
         }
 
         const user = await Admin.findOne({ email });
@@ -102,7 +102,7 @@ exports.login = async (req, res) => {
         }
     } catch (err) {
         console.log(err);
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }
@@ -117,7 +117,7 @@ exports.postuserBlogs = async (req, res) => {
 
     try {
         if (!(Date && sub_Title && Intro && blog_Images)) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: "All fields are required",
                 status: false,
             });
@@ -135,14 +135,14 @@ exports.postuserBlogs = async (req, res) => {
                 .status(400)
                 .json({ message: "User Blogs  is not created", status: false });
         }
-        res.status(200).json({
+        return res.status(200).json({
             message: "Blog is created successfully",
             data: result,
             status: true,
         });
     } catch (error) {
         console.log(error);
-        res.status(400).json({ message: error.message, status: false });
+        return res.status(400).json({ message: error.message, status: false });
     }
 };
 
@@ -156,12 +156,12 @@ exports.ViewDataBlogs = async (req, res) => {
                 .status(400)
                 .json({ message: "Enter the correct id", status: false });
         }
-        res.status(200).json({
+        return res.status(200).json({
             data: getBlogs,
             status: true,
         });
     } catch (error) {
-        res.status(400).json({ message: error.message, status: false });
+        return res.status(400).json({ message: error.message, status: false });
     }
 };
 exports.GetBlogs = async (req, res) => {
@@ -172,13 +172,13 @@ exports.GetBlogs = async (req, res) => {
                 .status(404)
                 .json({ message: "blogs not found", status: false });
         }
-        res.status(200).json({
+        return res.status(200).json({
             data: getBlogs,
             status: true,
         });
     } catch (error) {
         console.log(error);
-        res.status(400).json({ message: error.message, status: false });
+        return res.status(400).json({ message: error.message, status: false });
     }
 };
 //upadte
@@ -204,7 +204,7 @@ exports.UpdateBlogs = async (req, res) => {
         if (!updatedBlogs) {
             return res.status(404).send({ message: "Unable to update Blog" });
         }
-        res.status(200).send({ message: "updated", data: updatedBlogs });
+        return res.status(200).send({ message: "updated", data: updatedBlogs });
     } catch (error) {
         res.send({ message: error.message, status: false });
     }
@@ -219,7 +219,7 @@ exports.RemovedBlogs = async (req, res) => {
                 .status(400)
                 .json({ message: "Enter the correct id", status: false });
         } else {
-            res.status(200).json({
+            return res.status(200).json({
                 message: " Blogs is deleted successfully",
                 status: true,
             });
@@ -235,7 +235,7 @@ exports.UserFeedback = async (req, res) => {
 
     try {
         if (!(UserId && Feedback)) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: "All fields are required",
                 status: false,
             });
@@ -248,18 +248,18 @@ exports.UserFeedback = async (req, res) => {
             };
             const NewUserFeedback = await feedback.create(data);
             if (NewUserFeedback)
-                res.status(200).json({
+                return res.status(200).json({
                     message: "UserFeedback Send",
                     data: NewUserFeedback,
                     status: true,
                 });
-            res.status(400).json({
+            return res.status(400).json({
                 message: "UserFeedback  not send",
                 status: false,
             });
         }
     } catch (error) {
-        res.status(400).json({ message: error.message, status: false });
+        return res.status(400).json({ message: error.message, status: false });
     }
 };
 
@@ -273,14 +273,14 @@ exports.ViewAllFeedback = async (req, res) => {
                 message: "No Feedback Found",
             });
         }
-        res.status(200).json({
+        return res.status(200).json({
             message: "See All Feedback",
             Feedback: SendFeedback,
             status: true,
         });
     } catch (error) {
         console.log(error);
-        res.status(400).json({
+        return res.status(400).json({
             message: "internal server error",
         });
     }
@@ -301,12 +301,12 @@ exports.AddChargesofAstro = async (req, res) => {
             }
         );
         const Data = await fees.create(data);
-        res.status(200).json({
+        return res.status(200).json({
             details: Data,
         });
     } catch (err) {
         console.log(err);
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }
@@ -321,12 +321,12 @@ exports.GetAllFessDetails = async (req, res) => {
             });
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             details: data,
         });
     } catch (err) {
         console.log(err);
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
 };
 
@@ -338,12 +338,12 @@ exports.GetFeesByAstroId = async (req, res) => {
                 message: "No Fees Found",
             });
         }
-        res.status(200).json({
+        return res.status(200).json({
             details: data,
         });
     } catch (err) {
         console.log(err);
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }
@@ -357,12 +357,12 @@ exports.UpdateFees = async (req, res) => {
                 fees: req.body.fees,
             }
         );
-        res.status(200).json({
+        return res.status(200).json({
             message: "Fees Data is Updatd ",
         });
     } catch (err) {
         console.log(err);
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }
@@ -371,12 +371,12 @@ exports.UpdateFees = async (req, res) => {
 exports.DeleteFeedetails = async (req, res) => {
     try {
         await fees.deleteOne({ astroId: req.params.id });
-        res.status(200).json({
+        return res.status(200).json({
             message: "Astro Fees Data is Deleted ",
         });
     } catch (err) {
         console.log(err);
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
 };
 
@@ -388,11 +388,11 @@ exports.allAstro = async (req, res) => {
                 message: "No Astro Found",
             });
         }
-        res.status(200).json({
+        return res.status(200).json({
             details: users,
         });
     } catch (err) {
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }

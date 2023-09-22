@@ -47,14 +47,14 @@ const sendErrorProd = (err, req, res) => {
   // API
   if (req.originalUrl.startsWith("/api")) {
     if (err.isOperational) {
-      res.status(err.statusCode).json({
+      return res.status(err.statusCode).json({
         status: err.status,
         message: err.message,
       });
     } else {
       console.log("ERROR 💥", err);
       // Unknown Error
-      res.status(500).json({
+      return res.status(500).json({
         status: "error",
         message: "Something went Very Wrong!!",
       });
@@ -62,14 +62,14 @@ const sendErrorProd = (err, req, res) => {
   } else {
     // RENDERED WEBSITE
     if (err.isOperational) {
-      res.status(err.statusCode).json({
+      return res.status(err.statusCode).json({
         title: "Something Went wrong!",
         msg: err.message,
       });
     } else {
       console.log("ERROR 💥", err);
       // Unknown Error
-      res.status(err.statusCode).render("error", {
+      return res.status(err.statusCode).render("error", {
         title: "Something Went Wrong!",
         msg: "Please try again Later.",
       });

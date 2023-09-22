@@ -37,7 +37,7 @@ exports.addToCart = async (req, res) => {
             .json({ message: " added to cart", data: updatedCart });
     } catch (error) {
         console.log(error.message);
-        res.status(500).json({
+        return res.status(500).json({
             message: "internal server error " + error.message,
         });
     }
@@ -62,7 +62,7 @@ exports.getItemInCartOfUser = async (req, res) => {
         }
         console.log(total);
 
-        res.status(200).json({
+        return res.status(200).json({
             data: cartItems,
             subTotal: total,
             tax: 40,
@@ -71,7 +71,7 @@ exports.getItemInCartOfUser = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: "internal server error" });
+        return res.status(500).json({ message: "internal server error" });
     }
 };
 
@@ -91,12 +91,12 @@ exports.updateItemInCartOfUser = async (req, res) => {
             return res.status(400).json({ message: "product not found" });
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             message: "Cart item updated",
             data: updatedCartItem,
         });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: "internal server error" });
+        return res.status(500).json({ message: "internal server error" });
     }
 };

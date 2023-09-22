@@ -23,10 +23,10 @@ exports.create = async (req, res) => {
             userId,
         });
         await address.save();
-        res.status(201).json({ message: "address added ", data: address });
+        return res.status(201).json({ message: "address added ", data: address });
     } catch (error) {
         console.log(error.message);
-        res.status(400).json({ error: error.message });
+        return res.status(400).json({ error: error.message });
     }
 };
 
@@ -37,11 +37,11 @@ exports.get = async (req, res) => {
         if (addresses.length === 0) {
             return res.status(200).json({ message: "no addresses found" });
         }
-        res.status(200).json(addresses);
+        return res.status(200).json(addresses);
     } catch (error) {
         console.log(error.message);
         console.log(error);
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
 };
 
@@ -54,10 +54,10 @@ exports.getByUserId = async (req, res) => {
                 message: "address not found",
             });
         }
-        res.status(200).json(address);
+        return res.status(200).json(address);
     } catch (error) {
         console.log(error.message);
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
 };
 
@@ -87,10 +87,10 @@ exports.update = async (req, res) => {
         }
         updates.forEach((update) => (address[update] = req.body[update]));
         await address.save();
-        res.status(200).json(address);
+        return res.status(200).json(address);
     } catch (error) {
         console.log(error.message);
-        res.status(400).json({ error: error.message });
+        return res.status(400).json({ error: error.message });
     }
 };
 
@@ -101,9 +101,9 @@ exports.delete = async (req, res) => {
         if (!address) {
             return res.status(404).json();
         }
-        res.status(200).json(address);
+        return res.status(200).json(address);
     } catch (error) {
         console.log(error.message);
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
 };

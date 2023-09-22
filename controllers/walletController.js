@@ -8,9 +8,9 @@ exports.createWallet = async (req, res) => {
             astrologer: req.body.astrologer,
         });
         const newWallet = await wallet.save();
-        res.status(201).json({ data: newWallet });
+        return res.status(201).json({ data: newWallet });
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
 };
 
@@ -20,9 +20,9 @@ exports.getWallet = async (req, res) => {
         const wallet = await Wallet.findOne({ $or: [{ user: req.params.userId }, { astrologer: req.params.userId }] });
         if (!wallet)
             return res.status(404).json({ message: "Wallet not found" });
-        res.status(200).json({ data: wallet });
+        return res.status(200).json({ data: wallet });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        return res.status(500).json({ message: err.message });
     }
 };
 
@@ -40,12 +40,12 @@ exports.addTransaction = async (req, res) => {
             wallet.balance -= transaction.amount;
         }
         const updatedWallet = await wallet.save();
-        res.status(200).json({
+        return res.status(200).json({
             data: updatedWallet,
             message: `${transaction.amount} ${transaction.type}ed`,
         });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        return res.status(500).json({ message: err.message });
     }
 };
 
@@ -57,9 +57,9 @@ exports.deleteWallet = async (req, res) => {
         });
         if (!wallet)
             return res.status(404).json({ message: "Wallet not found" });
-        res.status(200).json(wallet);
+        return res.status(200).json(wallet);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        return res.status(500).json({ message: err.message });
     }
 };
 
@@ -82,9 +82,9 @@ exports.totalEarningBymonth = async (req, res) => {
             }
             return total;
         }, 0);
-        res.status.json({ data: totalCredit });
+        return res.status.json({ data: totalCredit });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        return res.status(500).json({ message: err.message });
     }
 };
 const mongoose = require("mongoose");
@@ -135,9 +135,9 @@ exports.totalCredit = async (req, res) => {
         ]);
         console.log(result);
         const totalCredit = result.length > 0 ? result[0].totalCredit : 0;
-        res.status(200).json({ data: totalCredit });
+        return res.status(200).json({ data: totalCredit });
     } catch (err) {
         console.log(err);
-        res.status(500).json({ message: err.message });
+        return res.status(500).json({ message: err.message });
     }
 };

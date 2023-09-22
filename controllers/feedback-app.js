@@ -12,10 +12,10 @@ exports.createFeedback = async (req, res) => {
 
         const savedFeedback = await feedback.save();
 
-        res.status(201).json(savedFeedback);
+        return res.status(201).json(savedFeedback);
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: "Internal server error" });
+        return res.status(500).json({ error: "Internal server error" });
     }
 };
 
@@ -27,10 +27,10 @@ exports.getFeedback = async (req, res) => {
             return res.status(404).json({ error: "Feedback not found" });
         }
 
-        res.status(200).json({ data: feedback });
+        return res.status(200).json({ data: feedback });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: "Internal server error" });
+        return res.status(500).json({ error: "Internal server error" });
     }
 };
 exports.getFeedbacks = async (req, res) => {
@@ -41,10 +41,10 @@ exports.getFeedbacks = async (req, res) => {
             return res.status(404).json({ error: "Feedback not found" });
         }
 
-        res.status(200).json({ data: feedback });
+        return res.status(200).json({ data: feedback });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: "Internal server error" });
+        return res.status(500).json({ error: "Internal server error" });
     }
 };
 
@@ -60,13 +60,13 @@ exports.updateFeedback = async (req, res) => {
             return res.status(404).json({ error: "Feedback not found" });
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             message: "updated successfully",
             data: feedback,
         });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: "Internal server error" });
+        return res.status(500).json({ error: "Internal server error" });
     }
 };
 
@@ -76,9 +76,9 @@ exports.deleteFeedback = async (req, res) => {
         if (!feedback) {
             return res.status(404).json({ error: "Feedback not found" });
         }
-        res.status(200).json({ message: "deleted successfully" });
+        return res.status(200).json({ message: "deleted successfully" });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ error: "Internal server error" });
+        return res.status(500).json({ error: "Internal server error" });
     }
 };

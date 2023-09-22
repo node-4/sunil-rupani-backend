@@ -5,10 +5,10 @@ const Astrologer = require("../models/astrologer");
 exports.getTestimonials = async (req, res) => {
     try {
         const testimonials = await Testimonial.find();
-        res.status(200).json({ data: testimonials });
+        return res.status(200).json({ data: testimonials });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Server Error" });
+        return res.status(500).json({ message: "Server Error" });
     }
 };
 
@@ -20,13 +20,13 @@ exports.createTestimonial = async (req, res) => {
     const testimonial = new Testimonial(req.body);
     try {
         const newTestimonial = await testimonial.save();
-        res.status(201).json({
+        return res.status(201).json({
             message: "testimonial submitted successfully",
             data: newTestimonial,
         });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Server Error" });
+        return res.status(500).json({ message: "Server Error" });
     }
 };
 
@@ -37,10 +37,10 @@ exports.getTestimonialById = async (req, res) => {
         if (!testimonial) {
             return res.status(404).json({ message: "Testimonial not found" });
         }
-        res.status(200).json({ data: testimonial });
+        return res.status(200).json({ data: testimonial });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Server Error" });
+        return res.status(500).json({ message: "Server Error" });
     }
 };
 
@@ -57,10 +57,10 @@ exports.updateTestimonial = async (req, res) => {
         }
 
         const updatedTestimonial = await testimonial.save();
-        res.status(200).json({ message: "updated", data: updatedTestimonial });
+        return res.status(200).json({ message: "updated", data: updatedTestimonial });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Server Error" });
+        return res.status(500).json({ message: "Server Error" });
     }
 };
 
@@ -72,9 +72,9 @@ exports.deleteTestimonial = async (req, res) => {
             return res.status(404).json({ message: "Testimonial not found" });
         }
 
-        res.status(200).json({ message: "Testimonial deleted" });
+        return res.status(200).json({ message: "Testimonial deleted" });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Server Error" });
+        return res.status(500).json({ message: "Server Error" });
     }
 };

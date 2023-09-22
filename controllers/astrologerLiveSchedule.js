@@ -5,12 +5,12 @@ const createAstrologerLiveSchedule = async (req, res) => {
     try {
         const astrologerLiveSchedule = new AstrologerLiveSchedule(req.body);
         await astrologerLiveSchedule.save();
-        res.status(201).json({
+        return res.status(201).json({
             message: "schedule added",
             data: astrologerLiveSchedule,
         });
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        return res.status(400).json({ message: error.message });
     }
 };
 
@@ -21,9 +21,9 @@ const getAllAstrologerLiveSchedules = async (req, res) => {
         const astrologerLiveSchedules = await AstrologerLiveSchedule.find({
             astrologerId,
         }).lean();
-        res.status(200).json({ data: astrologerLiveSchedules });
+        return res.status(200).json({ data: astrologerLiveSchedules });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 
@@ -37,9 +37,9 @@ const updateAstrologerLiveSchedule = async (req, res) => {
                 req.body,
                 { new: true }
             );
-        res.status(200).json({ data: astrologerLiveSchedule });
+        return res.status(200).json({ data: astrologerLiveSchedule });
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        return res.status(400).json({ message: error.message });
     }
 };
 
@@ -50,11 +50,11 @@ const deleteAstrologerLiveSchedule = async (req, res) => {
         await AstrologerLiveSchedule.findByIdAndDelete(
             astrologerLiveScheduleId
         );
-        res.status(200).json({
+        return res.status(200).json({
             message: "Astrologer live schedule deleted successfully.",
         });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 

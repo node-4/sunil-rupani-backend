@@ -97,7 +97,7 @@ module.exports.postuserProfiles = async (req, res) => {
         return res.status(201).json({ message: "signedup successfully" });
     } catch (error) {
         console.error(error);
-        res.status(500).json({
+        return res.status(500).json({
             message: "internal server error " + error.message,
         });
     }
@@ -109,19 +109,19 @@ module.exports.ViewDataProfiles = async (req, res) => {
     try {
         const getDetails = await User.findById(req.params.id);
         if (!getDetails) {
-            res.status(400).json({
+            return res.status(400).json({
                 message: "Enter the correct id",
                 status: false,
             });
         } else {
-            res.status(200).json({
+            return res.status(200).json({
                 message: "User Details is Created successfully",
                 data: getDetails,
                 status: true,
             });
         }
     } catch (error) {
-        res.status(400).json({ message: error.message, status: false });
+        return res.status(400).json({ message: error.message, status: false });
     }
 };
 
@@ -180,10 +180,10 @@ exports.getProfile = async (req, res) => {
         if (!user) {
             return res.status(400).json({ message: "User not found" });
         }
-        res.status(200).json({ user });
+        return res.status(200).json({ user });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Internal server error" });
+        return res.status(500).json({ message: "Internal server error" });
     }
 };
 
@@ -193,7 +193,7 @@ exports.updateUserProfile = async (req, res) => {
         await User.findByIdAndUpdate({ _id: req.params.id }, req.body, {
             new: true,
         });
-        res.status(200).json({
+        return res.status(200).json({
             message: "Updated Done ",
         });
     } catch (err) {
@@ -216,16 +216,16 @@ module.exports.SearchUserNameLangSkills = async (req, res) => {
             ],
         });
         if (student.length == 0) {
-            res.json({ message: "Data is not Found", status: false });
+            return res.json({ message: "Data is not Found", status: false });
         } else {
-            res.json({
+            return res.json({
                 message: " Data  is found Successfully",
                 student: student,
                 status: true,
             });
         }
     } catch (error) {
-        res.json({ message: error.message, status: false });
+        return res.json({ message: error.message, status: false });
     }
 };
 
@@ -237,16 +237,16 @@ module.exports.SearchUserName = async (req, res) => {
             User_Name: search,
         });
         if (student.length == 0) {
-            res.json({ message: "This User was not Found", status: false });
+            return res.json({ message: "This User was not Found", status: false });
         } else {
-            res.json({
+            return res.json({
                 message: " USer  is found",
                 student: student,
                 status: true,
             });
         }
     } catch (error) {
-        res.json({ message: error.message, status: false });
+        return res.json({ message: error.message, status: false });
     }
 };
 
@@ -258,16 +258,16 @@ module.exports.SearchAnyLanguagesName = async (req, res) => {
             $or: [{ Languages: { $regex: search, $options: "i" } }],
         });
         if (student.length == 0) {
-            res.json({ message: "This Languages Is not Found", status: false });
+            return res.json({ message: "This Languages Is not Found", status: false });
         } else {
-            res.json({
+            return res.json({
                 message: "Languages  is found",
                 student: student,
                 status: true,
             });
         }
     } catch (error) {
-        res.json({ message: error.message, status: false });
+        return res.json({ message: error.message, status: false });
     }
 };
 
@@ -278,15 +278,15 @@ module.exports.deleteUserName = async (req, res) => {
             _id: req.params.id,
         });
         if (!DeleteUser) {
-            res.status(404).json({ message: "user not found", status: false });
+            return res.status(404).json({ message: "user not found", status: false });
         } else {
-            res.status(200).json({
+            return res.status(200).json({
                 message: "User removed successfully",
                 status: true,
             });
         }
     } catch (error) {
-        res.status(400).json({ message: error.message, status: false });
+        return res.status(400).json({ message: error.message, status: false });
     }
 };
 
@@ -297,18 +297,18 @@ module.exports.deleteLanguages = async (req, res) => {
             $or: [{ Languages: { $regex: search, $options: "i" } }],
         });
         if (!DeleteUser) {
-            res.json({
+            return res.json({
                 message: "Enter the corret User Languages",
                 status: false,
             });
         } else {
-            res.status(200).json({
+            return res.status(200).json({
                 message: "Languages removed successfully",
                 status: true,
             });
         }
     } catch (error) {
-        res.status(400).json({ message: error.message, status: false });
+        return res.status(400).json({ message: error.message, status: false });
     }
 };
 
@@ -316,12 +316,12 @@ module.exports.deleteLanguages = async (req, res) => {
 module.exports.getAllBlogs = async (req, res) => {
     try {
         const blogs = await Blog.find();
-        res.status(200).json({
+        return res.status(200).json({
             status: "success",
             data: blogs,
         });
     } catch (err) {
-        res.status(400).json({
+        return res.status(400).json({
             status: "failure",
             message: err.message,
         });
@@ -332,12 +332,12 @@ module.exports.getAllUsers = async (req, res) => {
     try {
         const users = await User.find();
 
-        res.status(200).json({
+        return res.status(200).json({
             status: "success",
             data: users,
         });
     } catch (err) {
-        res.status(400).json({
+        return res.status(400).json({
             status: "failure",
             message: err.message,
         });
@@ -351,10 +351,10 @@ exports.getUser = async (req, res) => {
                 message: "User not found",
             });
         }
-        res.status(200).json({ data: user });
+        return res.status(200).json({ data: user });
     } catch (err) {
         console.log(err);
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }
@@ -368,7 +368,7 @@ exports.UserFeedback = async (req, res) => {
 
     try {
         if (!(UserId && Feedback && astroId)) {
-            res.status(402).json({
+            return res.status(402).json({
                 message: "All fields are required",
                 status: false,
             });
@@ -395,14 +395,14 @@ exports.UserFeedback = async (req, res) => {
             { averageRating: result[0]?.avgRating },
             { new: true }
         );
-        res.status(200).json({
+        return res.status(200).json({
             message: "UserFeedback Send",
             data: NewUserFeedback,
             status: true,
         });
     } catch (error) {
         console.error(error);
-        res.status(400).json({ message: error.message, status: false });
+        return res.status(400).json({ message: error.message, status: false });
     }
 };
 
@@ -412,12 +412,12 @@ exports.GetAllFeedBack = async (req, res) => {
 
         const data = await feedback.find(queryObj).sort({ rating: -1 }).lean();
         // console.log(data);
-        res.status(200).json({
+        return res.status(200).json({
             data: data,
         });
     } catch (err) {
         console.log(err);
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }
@@ -426,11 +426,11 @@ exports.GetAllFeedBack = async (req, res) => {
 exports.getFeedbackById = async (req, res) => {
     try {
         const data = await feedback.findOne({ userId: req.params.id });
-        res.status(200).json({
+        return res.status(200).json({
             data: data,
         });
     } catch (err) {
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }
@@ -446,11 +446,11 @@ exports.updateFeedback = async (req, res) => {
         if (!data) {
             return res.status(404).json({ message: "Feedback not found" });
         }
-        res.status(200).json({
+        return res.status(200).json({
             data: data,
         });
     } catch (err) {
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }
@@ -463,9 +463,9 @@ exports.deleteFeedback = async (req, res) => {
         if (!data) {
             return res.status(404).json({ message: "Feedback not found" });
         }
-        res.status(200).json({ message: "Feedback deleted successfully" });
+        return res.status(200).json({ message: "Feedback deleted successfully" });
     } catch (err) {
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }
@@ -474,9 +474,9 @@ exports.deleteFeedback = async (req, res) => {
 exports.GetAstroliveChanges = async (req, res) => {
     try {
         const data = await astroSttus.find({ status: true }).populate('astroId').limit(5).sort();
-        res.status(200).json({ data: data });
+        return res.status(200).json({ data: data });
     } catch (err) {
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }
@@ -485,9 +485,9 @@ exports.GetAstroliveChanges = async (req, res) => {
 exports.GetAstroUpcoming = async (req, res) => {
     try {
         const data = await astroSttus.find({ status: false }).limit(5).sort();
-        res.status(200).json({ data: data });
+        return res.status(200).json({ data: data });
     } catch (err) {
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }

@@ -12,47 +12,47 @@ exports.AddKundli = async (req, res) => {
             place: req.body.place
         }
         const kundilData = await kundli.create(data);
-        res.status(200).json({
-            details : kundilData
+        return res.status(200).json({
+            details: kundilData
         })
     } catch (err) {
         console.log(err);
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message
         })
     }
 }
 
-exports.getKundli = async(req,res) => {
-    try{
+exports.getKundli = async (req, res) => {
+    try {
         const data = await kundli.find();
 
-        res.status(200).json({
-            details :data
+        return res.status(200).json({
+            details: data
         })
-    }catch(err){
-        res.status(400).json({
+    } catch (err) {
+        return res.status(400).json({
             message: err.message
         })
     }
 }
 
 
-exports.updateKundil = async(req,res) => {
-    try{
-   await kundli.findByIdAndUpdate({_id: req.params.id}, {
-    name: req.body.name,
-    gender: req.body.gender,
-    DOB: req.body.DOB,
-    time: req.body.time,
-    place: req.body.place
-   });
-   res.status(200).json({
-    details: "updated "
-   })
-    }catch(err){
+exports.updateKundil = async (req, res) => {
+    try {
+        await kundli.findByIdAndUpdate({ _id: req.params.id }, {
+            name: req.body.name,
+            gender: req.body.gender,
+            DOB: req.body.DOB,
+            time: req.body.time,
+            place: req.body.place
+        });
+        res.status(200).json({
+            details: "updated "
+        })
+    } catch (err) {
         console.log(err);
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message
         })
     }
@@ -60,16 +60,16 @@ exports.updateKundil = async(req,res) => {
 
 
 
-exports.deleteKundil = async(req,res) => {
-    try{
-        await kundli.findByIdAndDelete({_id: req.params.id})
-        res.status(200).json({
+exports.deleteKundil = async (req, res) => {
+    try {
+        await kundli.findByIdAndDelete({ _id: req.params.id })
+        return res.status(200).json({
             message: "Deleted  "
         })
-        }catch(err){
-            console.log(err);
-            res.status(400).json({
-                message: err.message
-            })
-        }
+    } catch (err) {
+        console.log(err);
+        return res.status(400).json({
+            message: err.message
+        })
+    }
 }

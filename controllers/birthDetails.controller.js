@@ -11,7 +11,7 @@ exports.updateBirthDetails = async (req, res) => {
             { new: true }
         );
         if (!birthDetails) {
-            res.status(400).json({ message: "Birth Details not found" });
+            return res.status(400).json({ message: "Birth Details not found" });
         }
         const resObj = {
             firstName: birthDetails.firstName,
@@ -24,13 +24,13 @@ exports.updateBirthDetails = async (req, res) => {
             birthCity: birthDetails.birthCity,
         };
 
-        res.status(200).json({
+        return res.status(200).json({
             message: "Birth Details Updated",
             data: resObj,
         });
         // res.status(201).json({ message: birthDetails });
     } catch (error) {
-        res.status(400).json({ message: error.message, status: false });
+        return res.status(400).json({ message: error.message, status: false });
     }
 };
 
@@ -50,12 +50,12 @@ exports.getBirthDetails = async (req, res) => {
         if (!birthDetails) {
             return res.status(404).json({ message: "Birth Details not found" });
         }
-        res.status(200).json({
+        return res.status(200).json({
             data: birthDetails,
         });
     } catch (error) {
         console.log(error);
-        res.status(400).json({ message: error.message });
+        return res.status(400).json({ message: error.message });
     }
 };
 exports.getReferCodeOfUser = async (req, res) => {
@@ -66,12 +66,12 @@ exports.getReferCodeOfUser = async (req, res) => {
         if (!user) {
             return res.status(400).json({ message: "User not found" });
         }
-        res.status(200).json({
+        return res.status(200).json({
             data: user,
         });
     } catch (error) {
         console.log(error);
-        res.status(400).json({ message: error.message });
+        return res.status(400).json({ message: error.message });
     }
 };
 
@@ -83,11 +83,11 @@ exports.getReferCodeOfAstrologer = async (req, res) => {
         if (!user) {
             return res.status(400).json({ message: "User not found" });
         }
-        res.status(200).json({
+        return res.status(200).json({
             data: user,
         });
     } catch (error) {
         console.log(error);
-        res.status(400).json({ message: error.message });
+        return res.status(400).json({ message: error.message });
     }
 };

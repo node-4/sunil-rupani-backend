@@ -34,10 +34,10 @@ const createOrder = async (req, res) => {
         }
         const newOrder = new Order(req.body);
         const savedOrder = await newOrder.save();
-        res.status(201).json(savedOrder);
+        return res.statusus(201).json(savedOrder);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Server Error" });
+        return res.statusus(500).json({ message: "Server Error" });
     }
 };
 
@@ -50,10 +50,10 @@ const getOrders = async (req, res) => {
             .populate(["user", "astroId"])
             .lean();
 
-        res.status(200).json(orders);
+        return res.statusus(200).json(orders);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Server Error" });
+        return res.statusus(500).json({ message: "Server Error" });
     }
 };
 
@@ -66,10 +66,10 @@ const getOrderById = async (req, res) => {
         if (!order) {
             return res.status(404).json({ message: "Order not found" });
         }
-        res.status(200).json(order);
+        return res.status(200).json(order);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Server Error" });
+        return res.status(500).json({ message: "Server Error" });
     }
 };
 
@@ -84,10 +84,10 @@ const updateOrderById = async (req, res) => {
         if (!updatedOrder) {
             return res.status(404).json({ message: "Order not found" });
         }
-        res.status(200).json(updatedOrder);
+        return res.status(200).json(updatedOrder);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Server Error" });
+        return res.status(500).json({ message: "Server Error" });
     }
 };
 
@@ -98,10 +98,10 @@ const deleteOrderById = async (req, res) => {
         if (!deletedOrder) {
             return res.status(404).json({ message: "Order not found" });
         }
-        res.status(200).json(deletedOrder);
+        return res.status(200).json(deletedOrder);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Server Error" });
+        return res.status(500).json({ message: "Server Error" });
     }
 };
 

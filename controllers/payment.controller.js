@@ -44,12 +44,12 @@ exports.CreatePaymentOrder = async (req, res) => {
         productOrder.orderStatus = "placed";
         await productOrder.save();
 
-        res.status(200).json({
+        return res.status(200).json({
             details: AmountData
         })
     } catch (err) {
         console.log(err);
-        res.status(400).send({ message: err.message })
+        return res.status(400).send({ message: err.message })
     }
 };
 
@@ -63,7 +63,7 @@ exports.getAllPayments = async (req, res) => {
             return res.status(204).json({ message: "orders not found" }); s
 
         }
-        res.status(200).json({ details: Data })
+        return res.status(200).json({ details: Data })
     } catch (err) {
         console.log(err);
         res.state(400).json({
@@ -78,10 +78,10 @@ exports.GetPaymentsById = async (req, res) => {
         if (!Data.length) {
             return res.status(204).json({ message: "payment not found" });
         }
-        res.status(200).json({ details: Data })
+        return res.status(200).json({ details: Data })
     } catch (err) {
         console.log(err);
-        res.status(400).json({ message: err.message })
+        return res.status(400).json({ message: err.message })
     }
 }
 

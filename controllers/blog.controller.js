@@ -4,10 +4,10 @@ const Blog = require("../models/blog");
 exports.getBlogs = async (req, res) => {
     try {
         const blogs = await Blog.find().lean();
-        res.status(200).json({ data: blogs });
+        return res.status(200).json({ data: blogs });
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ message: "Server Error" });
+        return res.status(500).json({ message: "Server Error" });
     }
 };
 
@@ -20,13 +20,13 @@ exports.createBlog = async (req, res) => {
 
         await newBlog.save();
 
-        res.status(201).json({
+        return res.status(201).json({
             data: newBlog,
             message: "Blog created successfully",
         });
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ message: "Server Error" });
+        return res.status(500).json({ message: "Server Error" });
     }
 };
 
@@ -41,10 +41,10 @@ exports.getBlogById = async (req, res) => {
             return res.status(404).json({ msg: "Blog not found" });
         }
 
-        res.status(200).json({ data: blog });
+        return res.status(200).json({ data: blog });
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ message: "Server Error" });
+        return res.status(500).json({ message: "Server Error" });
     }
 };
 
@@ -59,13 +59,13 @@ exports.updateBlogById = async (req, res) => {
             return res.status(404).json({ message: "Blog not found" });
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             message: "blog Updated Successfully",
             data: blog,
         });
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ message: "Server Error" });
+        return res.status(500).json({ message: "Server Error" });
     }
 };
 
@@ -80,9 +80,9 @@ exports.deleteBlogById = async (req, res) => {
             return res.status(404).json({ message: "Blog not found" });
         }
 
-        res.status(200).json({ message: "Blog deleted" });
+        return res.status(200).json({ message: "Blog deleted" });
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ message: "Server Error" });
+        return res.status(500).json({ message: "Server Error" });
     }
 };

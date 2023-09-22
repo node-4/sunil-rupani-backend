@@ -7,13 +7,13 @@ exports.AddFeedback = async (req, res) => {
             return res.status(201).send({ message: "All fields are required" });
         } else {
             const data = await feedback.create({ astroId, Feedback, rating });
-            res.status(200).json({
+            return res.status(200).json({
                 details: data,
             });
         }
     } catch (err) {
         console.log(err);
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }
@@ -31,12 +31,12 @@ exports.getAllfeedback = async (req, res) => {
                 message: "No feedback found",
             });
         }
-        res.status(200).json({
+        return res.status(200).json({
             message: data,
         });
     } catch (err) {
         console.log(err);
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }
@@ -51,22 +51,22 @@ exports.getById = async (req, res) => {
             });
         }
 
-        res.status(200).json({ details: data });
+        return res.status(200).json({ details: data });
     } catch (err) {
         console.log(err);
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
 };
 
 exports.DeleteAstro = async (req, res) => {
     try {
         await feedback.findByIdAndDelete({ _id: req.body.id });
-        res.status(200).json({
+        return res.status(200).json({
             message: "Deleted ",
         });
     } catch (err) {
         console.log(err);
-        res.status(400).json({
+        return res.status(400).json({
             message: "internal error " + err.message,
         });
     }

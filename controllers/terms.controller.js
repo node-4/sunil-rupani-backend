@@ -6,10 +6,10 @@ exports.create = async (req, res) => {
             return res.status(400).send("please specify terms");
         }
         const result = await Terms.create({ terms: req.body.terms });
-        res.status(200).send({ msg: "created", data: result });
+        return res.status(200).send({ msg: "created", data: result });
     } catch (err) {
         console.log(err.message);
-        res.status(500).send({ msg: "internal server error ", error: err.message });
+        return res.status(500).send({ msg: "internal server error ", error: err.message });
     }
 };
 
@@ -21,10 +21,10 @@ exports.update = async (req, res) => {
         if (!data) {
             return res.status(400).send({ msg: "not found" });
         }
-        res.status(200).send({ msg: "updated", data: data });
+        return res.status(200).send({ msg: "updated", data: data });
     } catch (err) {
         console.log(err.message);
-        res.status(500).send({ msg: "internal server error ", error: err.message });
+        return res.status(500).send({ msg: "internal server error ", error: err.message });
     }
 };
 
@@ -35,10 +35,10 @@ exports.get = async (req, res) => {
             return buildResponse(res, 200, "terms not found");
             // return res.status(200).send({ msg: "not found" });
         }
-        res.status(200).send({ data: data });
+        return res.status(200).send({ data: data });
     } catch (err) {
         console.log(err.message);
-        res.status(500).send({ msg: "internal server error ", error: err.message });
+        return res.status(500).send({ msg: "internal server error ", error: err.message });
     }
 };
 
@@ -48,10 +48,10 @@ exports.getId = async (req, res) => {
         if (!data || data.length === 0) {
             return res.status(200).send({ msg: "not found" });
         }
-        res.status(200).send({ data: data });
+        return res.status(200).send({ data: data });
     } catch (err) {
         console.log(err.message);
-        res.status(500).send({ msg: "internal server error ", error: err.message });
+        return res.status(500).send({ msg: "internal server error ", error: err.message });
     }
 };
 
@@ -61,9 +61,9 @@ exports.delete = async (req, res) => {
         if (!data) {
             return res.status(400).send({ msg: "not found" });
         }
-        res.status(200).send({ msg: "deleted", data: data });
+        return res.status(200).send({ msg: "deleted", data: data });
     } catch (err) {
         console.log(err.message);
-        res.status(500).send({ msg: "internal server error", error: err.message });
+        return res.status(500).send({ msg: "internal server error", error: err.message });
     }
 };

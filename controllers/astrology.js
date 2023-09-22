@@ -29,13 +29,13 @@ exports.getPanchang = async (req, res) => {
 
         console.log(result);
 
-        res.status(200).json({
+        return res.status(200).json({
             data: result,
             message: "Panchang fetched",
         });
     } catch (err) {
         console.log(err);
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }

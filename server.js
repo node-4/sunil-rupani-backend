@@ -67,7 +67,7 @@ module.exports = { handler: serverless(app) };
 //   console.log(req.data)
 //   upload1(req, res, (err) => {
 //     if (err) {
-//       res.status(400).send("Something went wrong!");
+// return res.status(400).send("Something went wrong!");
 //     }
 //     res.send(req.file);
 //   });

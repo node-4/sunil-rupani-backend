@@ -14,7 +14,7 @@ module.exports.UserSettings = async (req, res) => {
         //       ActiveNotification,
         //     });
         //     if (NewUserSetting)
-        //       res.status(200)({
+        // return res.status(200)({
         //         message: "UserSetting Updated",
         //         data: NewUserSetting,
         //         status: true,
@@ -44,24 +44,24 @@ module.exports.UserSettings = async (req, res) => {
         const user = await User.findById(req.params.id);
         user.ActiveNotification = true;
         await user.save();
-        res.status(201).json({ message: user });
+        return res.status(201).json({ message: user });
     } catch (error) {
-        res.status(400).json({ message: error.message, status: false });
+        return res.status(400).json({ message: error.message, status: false });
     }
 };
 exports.addNotification = async (req, res) => {
     try {
         if (!req.body.message) {
-            res.status(400).json({ message: "message is required" });
+            return res.status(400).json({ message: "message is required" });
         }
         const notification = await Notification.create(req.body);
-        res.status(200).json({
+        return res.status(200).json({
             message: "Notification added successfully",
             data: notification,
         });
     } catch (err) {
         console.log(err);
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }
@@ -77,7 +77,7 @@ exports.sendNotification = async (req, res) => {
         });
     } catch (err) {
         console.log(err);
-        res.status(400).json({
+        return res.status(400).json({
             message: err.message,
         });
     }
@@ -94,11 +94,11 @@ exports.getAllNotifications = async (req, res) => {
                 message: "No notifications found",
             });
         }
-        res.status(200).json({
+        return res.status(200).json({
             data: notifications,
         });
     } catch (err) {
-        res.status(500).json({
+        return res.status(500).json({
             status: "Failed",
             message: err.message,
         });
@@ -114,11 +114,11 @@ exports.getNotificationById = async (req, res) => {
             });
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             data: notification,
         });
     } catch (err) {
-        res.status(500).json({
+        return res.status(500).json({
             message: err.message,
         });
     }

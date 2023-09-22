@@ -428,7 +428,7 @@ exports.deleteAstroName = async (req, res) => {
             _id: req.params.id,
         });
         if (!DeleteUser) {
-            res.json({ message: "Enter the corret User  Name", status: false });
+            return res.json({ message: "Enter the corret User  Name", status: false });
         } else {
             return res.status(200).json({
                 message: "User removed successfully",
@@ -446,7 +446,7 @@ exports.deleteLanguages = async (req, res) => {
             $or: [{ Languages: { $regex: search, $options: "i" } }],
         });
         if (!DeleteUser) {
-            res.json({
+            return res.json({
                 message: "Enter the corret User Languages",
                 status: false,
             });

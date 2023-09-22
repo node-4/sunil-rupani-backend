@@ -25,12 +25,12 @@ exports.follow = async (req, res, next) => {
             message: `${req.user.firstName} followed you`,
         });
         console.log(u);
-        res.status(200).json({
+        return res.status(200).json({
             message: `${req.user.firstName} followed ${astrologer.firstName}`,
         });
     } catch (err) {
         console.log(err);
-        res.status(500).json({ message: err.message });
+        return res.status(500).json({ message: err.message });
     }
 };
 
@@ -50,12 +50,12 @@ exports.unFollow = async (req, res) => {
         await req.user.save();
         const a = await astrologer.save();
         console.log(a);
-        res.status(200).json({
+        return res.status(200).json({
             message: `${req.user.firstName} unfollowed ${astrologer.firstName}`,
         });
     } catch (err) {
         console.log(err);
-        res.status(500).json({ message: err.message });
+        return res.status(500).json({ message: err.message });
     }
 };
 
@@ -71,12 +71,12 @@ exports.followers = async (req, res) => {
         if (!user.followers.length) {
             return res.status(404).json({ message: "No followers found" });
         }
-        res.status(200).json({
+        return res.status(200).json({
             data: user,
         });
     } catch (err) {
         console.log(err);
-        res.status(500).json({ message: err.message });
+        return res.status(500).json({ message: err.message });
     }
 };
 

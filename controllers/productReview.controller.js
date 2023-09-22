@@ -31,9 +31,9 @@ exports.createReview = async (req, res) => {
         product.averageRating = product.averageRating.toFixed(1);
         const updatedProduct = await product.save();
         console.log(updatedProduct);
-        res.status(201).json({ message: "review submitted", data: updated });
+        return res.status(201).json({ message: "review submitted", data: updated });
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
 };
 
@@ -47,9 +47,9 @@ exports.getAllReviews = async (req, res) => {
         if (reviews.length === 0) {
             return res.status(204).json({ message: "no reviews found" });
         }
-        res.json(reviews);
+        return res.json(reviews);
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        return res.status(500).json({ message: err.message });
     }
 };
 
@@ -57,9 +57,9 @@ exports.getReviewById = async (req, res) => {
     try {
         const review = await Review.findById(req.params.id);
         if (!review) throw new Error("Review not found");
-        res.json({ review });
+        return res.json({ review });
     } catch (err) {
-        res.status(404).json({ message: err.message });
+        return res.status(404).json({ message: err.message });
     }
 };
 
@@ -76,9 +76,9 @@ exports.updateReview = async (req, res) => {
         if (req.body.message) review.message = req.body.message;
 
         await review.save();
-        res.json({ review });
+        return res.json({ review });
     } catch (err) {
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
 };
 
@@ -87,8 +87,8 @@ exports.deleteReview = async (req, res) => {
         const review = await Review.findById(req.params.id);
         if (!review) throw new Error("Review not found");
         await review.remove();
-        res.json({ message: "Review deleted successfully" });
+        return res.json({ message: "Review deleted successfully" });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+        return res.status(500).json({ message: err.message });
     }
 };

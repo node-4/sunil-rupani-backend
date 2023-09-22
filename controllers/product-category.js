@@ -12,13 +12,13 @@ exports.createProductCategory = async (req, res) => {
         req.body.key = req.file.key;
         const productCategory = new ProductCategory(req.body);
         const savedProductCategory = await productCategory.save();
-        res.status(201).json({
+        return res.status(201).json({
             message: `${req.body.name} category added`,
             data: savedProductCategory,
         });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 
@@ -31,10 +31,10 @@ exports.getProductCategories = async (req, res) => {
                 .status(404)
                 .json({ message: "No product categories found" });
         }
-        res.status(200).json({ data: productCategories });
+        return res.status(200).json({ data: productCategories });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 
@@ -47,10 +47,10 @@ exports.getProductCategoryById = async (req, res) => {
                 .status(404)
                 .json({ message: "Product category not found" });
         }
-        res.status(200).json({ data: productCategory });
+        return res.status(200).json({ data: productCategory });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 
@@ -68,10 +68,10 @@ exports.updateProductCategoryById = async (req, res) => {
                 .status(404)
                 .json({ message: "Product category not found" });
         }
-        res.status(200).json(updatedProductCategory);
+        return res.status(200).json(updatedProductCategory);
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 
@@ -86,11 +86,11 @@ exports.deleteProductCategoryById = async (req, res) => {
                 .status(404)
                 .json({ message: "Product category not found" });
         }
-        res.status(200).json({
+        return res.status(200).json({
             message: `${deletedProductCategory.name}` + " deleted",
         });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };

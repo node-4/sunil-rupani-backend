@@ -8,12 +8,12 @@ exports.createPrivacy = async (req, res) => {
         const privacy = new Privacy({ content });
         const savedPrivacy = await privacy.save();
 
-        res.status(201).json({
+        return res.status(201).json({
             message: "created successfully",
             data: savedPrivacy,
         });
     } catch (error) {
-        res.status(500).json({ error: "Internal server error" });
+        return res.status(500).json({ error: "Internal server error" });
     }
 };
 
@@ -24,9 +24,9 @@ exports.getPrivacy = async (req, res) => {
             return res.status(404).json({ error: "Privacy policy not found" });
         }
 
-        res.status(200).json({ data: privacy[privacy.length - 1] });
+        return res.status(200).json({ data: privacy[privacy.length - 1] });
     } catch (error) {
-        res.status(500).json({ error: "Internal server error" });
+        return res.status(500).json({ error: "Internal server error" });
     }
 };
 
@@ -42,12 +42,12 @@ exports.updatePrivacy = async (req, res) => {
             return res.status(404).json({ error: "Privacy policy not found" });
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             message: "updated successfully",
             data: updatedPrivacy,
         });
     } catch (error) {
-        res.status(500).json({ error: "Internal server error" });
+        return res.status(500).json({ error: "Internal server error" });
     }
 };
 
@@ -59,8 +59,8 @@ exports.deletePrivacy = async (req, res) => {
             return res.status(404).json({ error: "Privacy policy not found" });
         }
 
-        res.status(200).json({ message: "deleted successfully" });
+        return res.status(200).json({ message: "deleted successfully" });
     } catch (error) {
-        res.status(500).json({ error: "Internal server error" });
+        return res.status(500).json({ error: "Internal server error" });
     }
 };

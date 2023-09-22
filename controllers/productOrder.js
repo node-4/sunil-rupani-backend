@@ -10,10 +10,10 @@ exports.buyNow = async (req, res) => {
             address,
             totalPrice,
         });
-        res.status(201).json({ data: cartProductOrder });
+        return res.status(201).json({ data: cartProductOrder });
     } catch (err) {
         console.log(err);
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
 };
 
@@ -29,10 +29,10 @@ exports.createCartProductOrder = async (req, res) => {
             totalPrice,
         });
 
-        res.status(201).json({ data: cartProductOrder });
+        return res.status(201).json({ data: cartProductOrder });
     } catch (error) {
         console.log(error);
-        res.status(400).json({ message: error.message });
+        return res.status(400).json({ message: error.message });
     }
 };
 
@@ -51,10 +51,10 @@ exports.getCartProductOrders = async (req, res) => {
         if (result.length === 0) {
             return res.status(200).json({ message: "no orders found" });
         }
-        res.status(200).json(result);
+        return res.status(200).json(result);
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 
@@ -67,10 +67,10 @@ exports.getCartProductOrderById = async (req, res) => {
                 .status(404)
                 .json({ error: "Cart Product Order not found" });
         }
-        res.json(cartProductOrder);
+        return res.json(cartProductOrder);
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 
@@ -104,10 +104,10 @@ exports.updateCartProductOrder = async (req, res) => {
             (update) => (cartProductOrder[update] = req.body[update])
         );
         await cartProductOrder.save();
-        res.json({ message: "order updated ", data: cartProductOrder });
+        return res.json({ message: "order updated ", data: cartProductOrder });
     } catch (error) {
         console.log(error);
-        res.status(400).json({ message: error.message });
+        return res.status(400).json({ message: error.message });
     }
 };
 
@@ -118,12 +118,10 @@ exports.deleteCartProductOrder = async (req, res) => {
             req.params.id
         );
         if (!cartProductOrder) {
-            return res
-                .status(404)
-                .json({ error: "Cart Product Order not found" });
+            return res.status(404).json({ error: "Cart Product Order not found" });
         }
-        res.json({ message: " Order deleted" });
+        return res.json({ message: " Order deleted" });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };

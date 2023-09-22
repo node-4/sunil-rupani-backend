@@ -30,13 +30,13 @@ exports.createAstrologerFee = async (req, res) => {
         }
         astrologer.astrologerFee = savedAstrologerFee._id;
         await astrologer.save();
-        res.status(201).json({
+        return res.status(201).json({
             message: "astrologer's fee added",
             data: savedAstrologerFee,
         });
     } catch (err) {
         console.log(err);
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
 };
 
@@ -44,10 +44,10 @@ exports.createAstrologerFee = async (req, res) => {
 exports.getAstrologerFees = async (req, res) => {
     try {
         const astrologerFees = await AstrologerFee.find().lean();
-        res.status(200).json({ data: astrologerFees });
+        return res.status(200).json({ data: astrologerFees });
     } catch (err) {
         console.log(err);
-        res.status(500).json({ message: err.message });
+        return res.status(500).json({ message: err.message });
     }
 };
 const mongoose = require("mongoose");
@@ -185,7 +185,7 @@ exports.getAstrologerFeeById = async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Server error" });
+        return res.status(500).json({ message: "Server error" });
     }
 };
 
@@ -202,10 +202,10 @@ exports.updateAstrologerFee = async (req, res) => {
                 .status(404)
                 .json({ message: "Astrologer fee record not found" });
         }
-        res.status(200).json({ data: astrologerFee });
+        return res.status(200).json({ data: astrologerFee });
     } catch (err) {
         console.log(err);
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
 };
 
@@ -220,10 +220,10 @@ exports.deleteAstrologerFee = async (req, res) => {
                 .status(404)
                 .json({ message: "Astrologer fee record not found" });
         }
-        res.status(200).json({ message: "Astrologer fee record deleted" });
+        return res.status(200).json({ message: "Astrologer fee record deleted" });
     } catch (err) {
         console.log(err);
-        res.status(500).json({ message: err.message });
+        return res.status(500).json({ message: err.message });
     }
 };
 
@@ -374,6 +374,6 @@ exports.getAstrologerFeeByUser = async (req, res) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: "Server error" });
+        return res.status(500).json({ message: "Server error" });
     }
 };

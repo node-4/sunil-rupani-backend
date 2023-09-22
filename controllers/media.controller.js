@@ -5,10 +5,10 @@ exports.create = async (req, res) => {
         const { gallery, trainingVideos } = req.body;
         const userId = req.user._id;
         const result = await Media.create({ userId, gallery, trainingVideos });
-        res.status(201).json(result);
+        return res.status(201).json(result);
     } catch (err) {
         console.error(err);
-        res.status(500).json({
+        return res.status(500).json({
             message: err.message
         });
     }
@@ -40,10 +40,10 @@ exports.update = async (req, res) => {
             console.log(result1);
 
         }
-        res.status(200).json({ message: "updated successfully" });
+        return res.status(200).json({ message: "updated successfully" });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: err.message });
+        return res.status(500).json({ message: err.message });
     }
 };
 
@@ -64,10 +64,10 @@ exports.get = async (req, res) => {
         if (result.length === 0) {
             return res.status(204).json({ message: "not found" });
         }
-        res.status(200).json({ data: result });
+        return res.status(200).json({ data: result });
     } catch (err) {
         console.error(err);
-        res.status(500).json({
+        return res.status(500).json({
             message: err.message
         });
     }
@@ -79,10 +79,10 @@ exports.getById = async (req, res) => {
         if (result.length === 0) {
             return res.status(204).json({ message: "not found" });
         }
-        res.status(200).json({ data: result });
+        return res.status(200).json({ data: result });
     } catch (err) {
         console.log(err);
-        res.status(500).json({ message: err.message });
+        return res.status(500).json({ message: err.message });
     }
 };
 

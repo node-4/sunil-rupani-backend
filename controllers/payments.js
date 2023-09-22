@@ -35,19 +35,19 @@ exports.CreatePaymentOrder = async (req, res) => {
         const AmountData = await payment.create(DBData);
         console.log(AmountData);
         const wallet = await Wallet.findOne();
-        res.status(200).json({
+        return res.status(200).json({
             details: AmountData,
         });
     } catch (err) {
         console.log(err);
-        res.status(400).send({ message: err.message });
+        return res.status(400).send({ message: err.message });
     }
 };
 
 exports.getAllPayments = async (req, res) => {
     try {
         const Data = await payment.find();
-        res.status(200).json({ data: Data });
+        return res.status(200).json({ data: Data });
     } catch (err) {
         console.log(err);
         res.state(400).json({
@@ -59,9 +59,9 @@ exports.getAllPayments = async (req, res) => {
 exports.GetPaymentsById = async (req, res) => {
     try {
         const Data = await payment.findById({ _id: req.params.id });
-        res.status(200).json({ details: Data });
+        return res.status(200).json({ details: Data });
     } catch (err) {
         console.log(err);
-        res.status(400).json({ message: err.message });
+        return res.status(400).json({ message: err.message });
     }
 };
