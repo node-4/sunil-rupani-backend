@@ -53,7 +53,7 @@ router.post("/loginwithmobile", astroControllers.loginWithMobile);
 router.post("/verifymobileotp/:id", astroControllers.verifyMobileOtp);
 router.get("/resend-otp/:id", astroControllers.resendOtp);
 router.post("/forgotpassword", astroControllers.forgetPassword);
-router.patch("/resetpassword/:id", astroControllers.resetPassword);
+router.put("/resetpassword/:id", astroControllers.resetPassword);
 router.get("/view/:id", astroControllers.ViewDataProfiles);
 router.get(
     "/search/:key",
