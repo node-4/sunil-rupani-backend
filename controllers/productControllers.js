@@ -202,3 +202,19 @@ exports.deleteProduct = async (req, res) => {
         });
     }
 };
+
+exports.getPopularProducts = async (req, res) => {
+    try {
+        const getproduct = await product.find().sort({ averageRating: -1 });
+        if (getproduct.length === 0) {
+            return res.status(200).json({
+                message: "product not found",
+                data: [],
+            });
+        }
+        return res.status(200).json({ status: "success", data: getproduct });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({ error: error.message });
+    }
+};
