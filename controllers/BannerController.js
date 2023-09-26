@@ -69,7 +69,7 @@ module.exports.deleteBanner = async (req, res) => {
       status: true,
     });
   } catch (error) {
-    res.send(500).json({
+    return res.send(500).json({
       status: "Failed",
       message: error.message,
     });

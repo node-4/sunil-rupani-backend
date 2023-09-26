@@ -16,7 +16,7 @@ app.use(compression());
 const PORT = process.env.PORT || 3002;
 const DB_URI = process.env.DB_URI;
 app.get("/", (req, res) => {
-    res.send("Hello World!");
+    return res.send("Hello World!");
 });
 
 app.use("/", require("./routes/router"));
@@ -69,7 +69,7 @@ module.exports = { handler: serverless(app) };
 //     if (err) {
 // return res.status(400).send("Something went wrong!");
 //     }
-//     res.send(req.file);
+//    return  res.send(req.file);
 //   });
 // });
 

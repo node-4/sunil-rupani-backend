@@ -71,7 +71,7 @@ exports.sendNotification = async (req, res) => {
     try {
         const user = await User.find({ ActiveNotification: true });
         console.log(user);
-        res.send({
+        return res.send({
             message: "All the users who have opted to receive notifications",
             data: user,
         });

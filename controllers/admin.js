@@ -48,7 +48,7 @@ exports.signUpUser = async (req, res) => {
             message: "Unable to create new user",
         });
     }
-    res.send(newUser);
+    return res.send(newUser);
 };
 
 const createUser = async (email, mobile_Number, password, user_Name) => {
@@ -96,7 +96,7 @@ exports.login = async (req, res) => {
                 { expiresIn: "3h" },
                 (err, token) => {
                     if (err) res.status(400).send("Invalid Credentials");
-                    res.send({ user, token });
+                    return res.send({ user, token });
                 }
             );
         }
@@ -206,7 +206,7 @@ exports.UpdateBlogs = async (req, res) => {
         }
         return res.status(200).send({ message: "updated", data: updatedBlogs });
     } catch (error) {
-        res.send({ message: error.message, status: false });
+        return res.send({ message: error.message, status: false });
     }
 };
 
@@ -225,7 +225,7 @@ exports.RemovedBlogs = async (req, res) => {
             });
         }
     } catch (error) {
-        res.send({ message: error.message, status: false });
+        return res.send({ message: error.message, status: false });
     }
 };
 
