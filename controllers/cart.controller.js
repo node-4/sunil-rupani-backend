@@ -6,35 +6,23 @@ exports.addToCart = async (req, res) => {
             product: req.body.productId,
             quantity: req.body.quantity,
         };
-        // const { productId, quantity } = req.body;
         const userId = req.user._id;
-        // Assuming you're using JWT authentication middleware to get user ID
         if (req.user.role === "astrologer") {
-            cartObj.astrologer = user;
+            cartObj.astrologer = userId;
         }
         if (req.user.role === "user") {
-            cartObj.user = user;
+            cartObj.user = userId;
         }
         const cart = await Cart.findOne({ userId });
 
         if (cart) {
-            // If the product already exists in the cart, update the quantity
             cart.quantity += quantity;
             const updatedCart = await cart.save();
-            return res.status(200).json({
-                message: "Product quantity updated in the car",
-                data: updatedCart,
-            });
+            return res.status(200).json({ message: "Product quantity updated in the car", data: updatedCart, });
         }
-
-        // If the product doesn't exist in the cart, create a new cart item
         const newCartItem = new Cart(cartObj);
-
         const updatedCart = await newCartItem.save();
-
-        return res
-            .status(201)
-            .json({ message: " added to cart", data: updatedCart });
+        return res.status(201).json({ message: " added to cart", data: updatedCart });
     } catch (error) {
         console.log(error.message);
         return res.status(500).json({
@@ -45,23 +33,18 @@ exports.addToCart = async (req, res) => {
 
 exports.getItemInCartOfUser = async (req, res) => {
     try {
-        const cartItems = await Cart.find({ userId: req.params.id }).populate(
-            "product"
-        );
+        const cartItems = await Cart.find({ $or: [{ userId: req.params.id }, { astrologer: req.params.id }] }).populate("product");
         if (!cartItems || cartItems.length === 0) {
             return res.status(204).json({
                 message: "Cart is empty",
             });
         }
-        // console.log(cartItems[0].product.price);
         var total = 0;
-
         for (const item of cartItems) {
-            console.log(item.product.price, " ", item.quantity);
+            console.log(item);
             total = total + item.quantity * parseInt(item.product.price);
         }
         console.log(total);
-
         return res.status(200).json({
             data: cartItems,
             subTotal: total,
