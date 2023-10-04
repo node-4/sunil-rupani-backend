@@ -46,14 +46,13 @@ router.post("/cart", isAuthenticated, cart.addToCart);
 //Address
 router.post("/address", address.create);
 router.get("/address/:id", address.getByUserId);
-
-//productOrder
-router.post(
-    "/productOrder",
-    isAuthenticated,
-    productOrder.createCartProductOrder
-);
-router.get("/productOrder", productOrder.getCartProductOrders);
+// //productOrder
+// router.post(
+//     "/productOrder",
+//     isAuthenticated,
+//     productOrder.createCartProductOrder
+// );
+// router.get("/productOrder", productOrder.getCartProductOrders);
 
 //productReciew
 router.post("/productReview", isAuthenticated, productReview.createReview);

@@ -1,127 +1,184 @@
-const CartProductOrder = require("../models/productOrder.model");
+const productOrder = require("../models/productOrder.model");
+const Cart = require('../models/cart.model');
+exports.checkoutForProduct = async (req, res) => {
+        try {
+                if ((req.user.role == "astrologer") == true) {
+                        let findOrder = await productOrder.find({ astrologer: req.user._id, orderStatus: "unconfirmed" });
+                        if (findOrder.length > 0) {
+                                for (let i = 0; i < findOrder.length; i++) {
+                                        console.log("-----------");
+                                        await productOrder.findByIdAndDelete({ _id: findOrder[i]._id });
+                                }
+                                let findCart = await Cart.findOne({ astrologer: req.user._id }).populate({ path: "products.productId", select: { reviews: 0 } });
+                                if (findCart) {
+                                        let discount = 0, shipping = 10, total = 0, subTotal = 0;
+                                        const cartResponse = findCart.toObject();
+                                        cartResponse.products.forEach((cartProduct) => {
+                                                cartProduct.subTotal = cartProduct.productId.price * cartProduct.quantity;
+                                                cartProduct.discount = 0;
+                                                subTotal += cartProduct.subTotal;
+                                                discount += cartProduct.discount;
+                                                total += cartProduct.total;
+                                        });
+                                        cartResponse.discount = discount;
+                                        cartResponse.subTotal = subTotal;
+                                        cartResponse.astroId = req.user._id;
+                                        cartResponse.shipping = shipping;
+                                        cartResponse.total = subTotal + shipping;
+                                        cartResponse.orderId = await reffralCode();
+                                        let saveOrder = await productOrder.create(cartResponse);
+                                        return res.status(200).json({ msg: "product added to cart", data: saveOrder });
+                                }
+                        } else {
+                                let findCart = await Cart.findOne({ astrologer: req.user._id }).populate({ path: "products.productId", select: { reviews: 0 } });
+                                if (findCart) {
+                                        let discount = 0, shipping = 10, total = 0, subTotal = 0;
+                                        const cartResponse = findCart.toObject();
+                                        cartResponse.products.forEach((cartProduct) => {
+                                                cartProduct.subTotal = cartProduct.productId.price * cartProduct.quantity;
+                                                cartProduct.discount = 0;
+                                                subTotal += cartProduct.subTotal;
+                                                discount += cartProduct.discount;
+                                                total += cartProduct.total;
+                                        });
+                                        cartResponse.discount = discount;
+                                        cartResponse.subTotal = subTotal;
+                                        cartResponse.astroId = req.user._id;
+                                        cartResponse.shipping = shipping;
+                                        cartResponse.total = subTotal + shipping;
+                                        cartResponse.orderId = await reffralCode();
+                                        let saveOrder = await productOrder.create(cartResponse);
+                                        return res.status(200).json({ msg: "product added to cart", data: saveOrder });
+                                }
+                        }
+                }
+                if ((req.user.role == "user") == true) {
+                        let findOrder = await productOrder.find({ astrologer: req.user._id, orderStatus: "unconfirmed" });
+                        if (findOrder.length > 0) {
+                                for (let i = 0; i < findOrder.length; i++) {
+                                        console.log("-----------");
+                                        await productOrder.findByIdAndDelete({ _id: findOrder[i]._id });
+                                }
+                                let findCart = await Cart.findOne({ user: req.user._id }).populate({ path: "products.productId", select: { reviews: 0 } });
+                                if (findCart) {
+                                        let discount = 0, shipping = 10, total = 0, subTotal = 0;
+                                        const cartResponse = findCart.toObject();
+                                        cartResponse.products.forEach((cartProduct) => {
+                                                cartProduct.subTotal = cartProduct.productId.price * cartProduct.quantity;
+                                                cartProduct.discount = 0;
+                                                subTotal += cartProduct.subTotal;
+                                                discount += cartProduct.discount;
+                                                total += cartProduct.total;
+                                        });
+                                        cartResponse.discount = discount;
+                                        cartResponse.coupan = coupan;
+                                        cartResponse.subTotal = subTotal;
+                                        cartResponse.userId = req.user._id;
+                                        cartResponse.shipping = shipping;
+                                        cartResponse.total = subTotal - coupan + shipping;
+                                        cartResponse.orderId = await reffralCode();
+                                        let saveOrder = await productOrder.create(cartResponse);
+                                        return res.status(200).json({ msg: "product added to cart", data: saveOrder });
+                                }
+                        } else {
+                                let findCart = await Cart.findOne({ user: req.user._id }).populate({ path: "products.productId", select: { reviews: 0 } });
+                                if (findCart) {
+                                        let discount = 0, shipping = 10, total = 0, subTotal = 0;
+                                        const cartResponse = findCart.toObject();
+                                        cartResponse.products.forEach((cartProduct) => {
+                                                cartProduct.subTotal = cartProduct.productId.price * cartProduct.quantity;
+                                                cartProduct.discount = 0;
+                                                subTotal += cartProduct.subTotal;
+                                                discount += cartProduct.discount;
+                                                total += cartProduct.total;
+                                        });
+                                        cartResponse.discount = discount;
+                                        cartResponse.coupan = coupan;
+                                        cartResponse.subTotal = subTotal;
+                                        cartResponse.userId = req.user._id;
+                                        cartResponse.shipping = shipping;
+                                        cartResponse.total = subTotal - coupan + shipping;
+                                        cartResponse.orderId = await reffralCode();
+                                        let saveOrder = await productOrder.create(cartResponse);
+                                        return res.status(200).json({ msg: "product added to cart", data: saveOrder });
+                                }
+                        }
+                }
 
-exports.buyNow = async (req, res) => {
-    try {
-        const { product, address, totalPrice } = req.body;
-        const userId = req.user._id;
-        const cartProductOrder = await CartProductOrder.create({
-            userId: userId,
-            product,
-            address,
-            totalPrice,
-        });
-        return res.status(201).json({ data: cartProductOrder });
-    } catch (err) {
-        console.log(err);
-        return res.status(400).json({ message: err.message });
-    }
-};
-
-// Create a new CartProductOrder
-exports.createCartProductOrder = async (req, res) => {
-    try {
-        const { product, address, totalPrice } = req.body;
-        const userId = req.user._id;
-        const cartProductOrder = await CartProductOrder.create({
-            userId: userId,
-            product,
-            address,
-            totalPrice,
-        });
-
-        return res.status(201).json({ data: cartProductOrder });
-    } catch (error) {
-        console.log(error);
-        return res.status(400).json({ message: error.message });
-    }
-};
-
-// Read all CartProductOrders
-exports.getCartProductOrders = async (req, res) => {
-    try {
-        const queryObj = {};
-        if (req.query.userId) {
-            queryObj.userId = req.query.userId;
+        } catch (error) {
+                console.log(error);
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
-        console.log(queryObj);
-
-        const result = await CartProductOrder.find(queryObj).sort({
-            createdAt: -1,
-        });
-        if (result.length === 0) {
-            return res.status(200).json({ message: "no orders found" });
+};
+exports.cancelOrderForProduct = async (req, res) => {
+        try {
+                let findUserOrder = await productOrder.findOne({ orderId: req.params.orderId });
+                if (findUserOrder) {
+                        return res.status(201).json({ message: "Payment failed.", status: 201, orderId: req.params.orderId });
+                } else {
+                        return res.status(404).json({ message: "No data found", data: {} });
+                }
+        } catch (error) {
+                console.log(error);
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
-        return res.status(200).json(result);
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: error.message });
-    }
+};
+exports.successOrderForProduct = async (req, res) => {
+        try {
+                let findUserOrder = await productOrder.findOne({ orderId: req.params.orderId });
+                if (findUserOrder) {
+                        let update = await productOrder.findByIdAndUpdate({ _id: findUserOrder._id }, { $set: { orderStatus: "confirmed", paymentStatus: "paid" } }, { new: true });
+                        let deleteCart = await Cart.findOneAndDelete({ user: findUserOrder.user });
+                        if (deleteCart) {
+                                return res.status(200).json({ message: "Payment success.", status: 200, data: update });
+                        }
+                } else {
+                        return res.status(404).json({ message: "No data found", data: {} });
+                }
+        } catch (error) {
+                console.log(error);
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
+        }
 };
 
-// Read a single CartProductOrder by ID
-exports.getCartProductOrderById = async (req, res) => {
-    try {
-        const cartProductOrder = await CartProductOrder.findById(req.params.id);
-        if (!cartProductOrder) {
-            return res
-                .status(404)
-                .json({ error: "Cart Product Order not found" });
+exports.getProductOrders = async (req, res, next) => {
+        try {
+                if ((req.user.role == "astrologer") == true) {
+                        let findOrder = await productOrder.find({ astroId: req.user._id, orderStatus: "confirmed" }).populate([{ path: "products.productId", select: { reviews: 0 } }]);
+                        if (findOrder.length == 0) {
+                                return res.status(404).json({ status: 404, message: "Orders not found", data: {} });
+                        }
+                        return res.status(200).json({ status: 200, msg: "orders of user", data: findOrder })
+                }
+                if ((req.user.role == "user") == true) {
+                        let findOrder = await productOrder.find({ userId: req.user._id, orderStatus: "confirmed" }).populate([{ path: "products.productId", select: { reviews: 0 } }]);
+                        if (findOrder.length == 0) {
+                                return res.status(404).json({ status: 404, message: "Orders not found", data: {} });
+                        }
+                        return res.status(200).json({ status: 200, msg: "orders of user", data: findOrder })
+                }
+        } catch (error) {
+                console.log(error);
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
-        return res.json(cartProductOrder);
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: error.message });
-    }
 };
-
-// Update an existing CartProductOrder
-exports.updateCartProductOrder = async (req, res) => {
-    const updates = Object.keys(req.body);
-    const allowedUpdates = [
-        "userId",
-        "product",
-        "address",
-        "totalPrice",
-        "orderStatus",
-    ];
-    const isValidOperation = updates.every((update) =>
-        allowedUpdates.includes(update)
-    );
-
-    if (!isValidOperation) {
-        return res.status(400).json({ error: "Invalid updates!" });
-    }
-
-    try {
-        const cartProductOrder = await CartProductOrder.findById(req.params.id);
-        if (!cartProductOrder) {
-            return res
-                .status(404)
-                .json({ error: "Cart Product Order not found" });
+exports.getProductOrderbyId = async (req, res, next) => {
+        try {
+                const orders = await productOrder.findById({ _id: req.params.id }).populate([{ path: "products.productId", select: { reviews: 0 } },]);
+                if (!orders) {
+                        return res.status(404).json({ status: 404, message: "Orders not found", data: {} });
+                }
+                return res.status(200).json({ status: 200, msg: "orders of user", data: orders })
+        } catch (error) {
+                console.log(error);
+                return res.status(501).send({ status: 501, message: "server error.", data: {}, });
         }
-
-        updates.forEach(
-            (update) => (cartProductOrder[update] = req.body[update])
-        );
-        await cartProductOrder.save();
-        return res.json({ message: "order updated ", data: cartProductOrder });
-    } catch (error) {
-        console.log(error);
-        return res.status(400).json({ message: error.message });
-    }
 };
-
-// Delete a CartProductOrder
-exports.deleteCartProductOrder = async (req, res) => {
-    try {
-        const cartProductOrder = await CartProductOrder.findByIdAndDelete(
-            req.params.id
-        );
-        if (!cartProductOrder) {
-            return res.status(404).json({ error: "Cart Product Order not found" });
+const reffralCode = async () => {
+        var digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        let OTP = '';
+        for (let i = 0; i < 9; i++) {
+                OTP += digits[Math.floor(Math.random() * 36)];
         }
-        return res.json({ message: " Order deleted" });
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-};
+        return OTP;
+}

@@ -4,7 +4,7 @@ const astroControllers = require("../controllers/astrologerControllers");
 const admin = require("../controllers/admin");
 const product = require("../controllers/productControllers");
 const terms = require("../controllers/terms.controller");
-const productOrder = require("../controllers/astro-product-order");
+const productOrder = require("../controllers/productOrder");
 const cart = require("../controllers/cart.controller");
 var multer = require("multer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
@@ -15,6 +15,12 @@ const upload = multer({ storage: storage });//cart apis
 router.get("/cart/:id", cart.getItemInCartOfUser);
 router.post("/cart", isAuthenticated, cart.addToCart);
 router.post("/addAddresstoCart", isAuthenticated, cart.addAddresstoCart);
+// product order
+router.post("/checkout/productorder", isAuthenticated, productOrder.checkoutForProduct);
+router.post("/checkout/success/:orderId", isAuthenticated, productOrder.successOrderForProduct);
+router.post("/checkout/cancel/:orderId", isAuthenticated, productOrder.cancelOrderForProduct);
+router.get("/productOrders", isAuthenticated, productOrder.getProductOrders);
+router.get("/viewproductOrder/:id", isAuthenticated, productOrder.getProductOrderbyId);
 
 //Blogs
 router.get("/blogs/:id", admin.ViewDataBlogs);
@@ -24,25 +30,11 @@ router.get("/blogs", admin.GetBlogs);
 router.get("/products/:id", product.getProduct);
 router.get("/products", product.getProducts);
 router.get("/recommended-products/:id", product.getRecommendedProducts);
-// product order
-router.post("/product-order", productOrder.createCartProductOrder);
-router.get("/product-order/:id", productOrder.getCartProductOrderById);
-router.get("/product-order", productOrder.getCartProductOrders);
-router.put("/product-order/:id", productOrder.updateCartProductOrder);
-router.delete("/product-order/:id", productOrder.deleteCartProductOrder);
 
 //profile
 router.get("/profile/:id", astroControllers.getAstrolgerById);
-router.put(
-    "/profile-image/:id",
-    upload.single("image"),
-    astroControllers.updateProfile1
-);
-router.put(
-    "/profile/:id",
-
-    astroControllers.updateAstrologer
-);
+router.put("/profile-image/:id", upload.single("image"), astroControllers.updateProfile1);
+router.put("/profile/:id", astroControllers.updateAstrologer);
 
 //astrologer
 router.post("/register", astroControllers.register);
