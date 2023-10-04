@@ -171,7 +171,7 @@ exports.verifyOTP = async (req, res) => {
         if (data.otp != req.body.otp) {
             return res.status(400).send({ message: "Invalid OTP" });
         }
-        const accessToken = jwt.sign({ id: data._id }, JWTkey, (err, token) => {
+        const accessToken = jwt.sign({ id: data._id, role: data.role }, JWTkey, (err, token) => {
             if (err) return res.status(400).send("Invalid Credentials");
             return res.status(200).send({ token, data });
         });
@@ -209,7 +209,7 @@ exports.verifyMobileOtp = async (req, res) => {
         if (user.otp != req.body.otp) {
             return res.status(400).send({ message: "Invalid OTP" });
         }
-        const accessToken = jwt.sign({ id: user._id }, JWTkey, (err, token) => {
+        const accessToken = jwt.sign({ id: user._id, role: user.role }, JWTkey, (err, token) => {
             if (err) return res.status(400).send("Invalid Credentials");
             return res.status(200).send({ token, user });
         });
@@ -234,7 +234,7 @@ exports.login = async (req, res) => {
         const isPassword = await compare(password, user.password);
         console.log(isPassword);
         if (isPassword) {
-            jwt.sign({ id: user._id }, JWTkey, (err, token) => {
+            jwt.sign({ id: user._id, role: user.role }, JWTkey, (err, token) => {
                 if (err) return res.status(400).send({ message: "Invalid Credentials" });
                 return res.status(200).send({ user, token });
             });

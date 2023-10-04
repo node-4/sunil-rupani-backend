@@ -14,6 +14,7 @@ const storage = new CloudinaryStorage({ cloudinary: cloudinary, params: { folder
 const upload = multer({ storage: storage });//cart apis
 router.get("/cart/:id", cart.getItemInCartOfUser);
 router.post("/cart", isAuthenticated, cart.addToCart);
+router.post("/addAddresstoCart", isAuthenticated, cart.addAddresstoCart);
 
 //Blogs
 router.get("/blogs/:id", admin.ViewDataBlogs);
